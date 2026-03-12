@@ -1,0 +1,103 @@
+# Custom Schema: Spring Boot Analysis
+# 參考 generate-sd skill 的 6 階段分析模式，產出 System Design 文件
+name: spring-boot-analysis
+version: 1
+description: Spring Boot 分析流程，從 PRD 到 System Design 文件（整合 /generate-sd skill）
+
+artifacts:
+  # 1. Requirements — 解析 PRD，抽取需求
+  - id: requirements
+    generates: requirements.md
+    description: 需求解析，從 PRD 抽取結構化需求清單
+    template: requirements.md
+    instruction: |
+      解析 PRD 文件，產出結構化需求清單（繁體中文）。
+      - 抽取所有需求 ID（支援 FR-xxx、BE-xxx、NFR-xxx、FEATURE-xxx 格式）
+      - 分類：功能需求 vs 非功能需求
+      - 識別功能類型：新增功能 / 變更需求 / 修復
+      - 列出每個需求的簡要描述和驗收條件
+      - 標註需求間的依賴關係（如有）
+
+      使用者須在提案時提供 PRD 文件路徑。
+    requires: []
+
+  # 2. Codebase Scan — 掃描現有程式碼庫
+  - id: codebase-scan
+    generates: codebase-scan.md
+    description: 程式碼庫掃描報告，分類現有元件為 Reuse/Modify/Create
+    template: codebase-scan.md
+    instruction: |
+      掃描現有 Spring Boot 程式碼庫（繁體中文）。
+      掃描順序：Entity → Repository → Service → Controller → DTO → Mapper → Config
+
+      對每個元件判斷：
+      - ♻️ Reuse（完全可重用，無需修改）
+      - ✏️ Modify（部分符合，需新增欄位或方法）
+      - 🆕 Create（無現有元件，需全新建立）
+
+      產出格式為三張表格（Reuse / Modify / Create），每列包含：
+      - 元件路徑
+      - 元件類型（Entity/Service/Controller 等）
+      - 對應的需求 ID
+      - 用途說明或需要的修改內容
+
+      使用者須在提案時提供程式碼庫根路徑。
+    requires:
+      - requirements
+
+  # 3. Design Decisions — 設計決策
+  - id: design-decisions
+    generates: design-decisions.md
+    description: 設計決策紀錄，包含 DB/API/元件設計方案
+    template: design-decisions.md
+    instruction: |
+      根據 requirements 和 codebase-scan 的結果，產出設計決策（繁體中文）。
+      分四個面向：
+
+      1. 元件重用策略：確認哪些元件 Reuse/Modify/Create，說明理由
+      2. 設計方案：針對核心功能提出設計方向（DB schema、API 設計、商業邏輯）
+      3. 資料庫設計：ERD、欄位定義、migration 策略；若使用者有提供現有 schema，進行比對
+      4. 輸出規劃：SD 文件的輸出路徑和檔名
+
+      每個決策須包含：
+      - 決策項目
+      - 可選方案（至少 2 個）
+      - 選定方案和理由
+      - 影響範圍
+    requires:
+      - codebase-scan
+
+  # 4. System Design — 執行 /generate-sd 產出 SD 文件
+  - id: system-design
+    generates: system-design.md
+    description: 完整的 System Design 文件（由 /generate-sd skill 產出）
+    template: system-design.md
+    instruction: |
+      根據前面三個 artifacts 的分析結果，執行 /generate-sd 產出完整的 SD 文件。
+
+      執行前準備：
+      - 將 requirements.md 的需求清單作為 /generate-sd Phase 1 的輸入
+      - 將 codebase-scan.md 的元件分類作為 /generate-sd Phase 2 的輸入
+      - 將 design-decisions.md 的設計決策作為 /generate-sd Phase 3 的輸入
+
+      執行 /generate-sd 時：
+      - Phase 1（輸入解析）：引用 requirements.md，跳過重複解析
+      - Phase 2（程式碼掃描）：引用 codebase-scan.md，跳過重複掃描
+      - Phase 3（互動確認）：引用 design-decisions.md 作為預設方案，僅確認差異
+      - Phase 4-6：正常執行（生成 SD → 品質驗證 → 輸出確認）
+
+      最終 SD 文件須包含：
+      - 文件資訊（版本、日期、相關 PRD）
+      - 後端架構設計（Component diagram）
+      - 資料庫設計（ERD + 資料表規格 + Migration script）
+      - API 設計（Endpoint 總覽 + 詳細規格，Response 使用 ReturnMsg<T>）
+      - Class 設計（Entity class diagram + Service class diagram）
+      - Sequence Diagram（每個 API 的主要流程）
+      - 測試規格（測試案例表）
+      - 附錄：需求追溯矩陣（100% 覆蓋率）
+    requires:
+      - design-decisions
+
+apply:
+  requires: [system-design]
+  tracks: system-design.md

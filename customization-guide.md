@@ -871,66 +871,321 @@ apply:
 流程：research → proposal → tasks → implement
 ```
 
-### 8.4 Spring Boot Backend — 後端團隊專用
+### 8.4 Spring Boot Dev — 開發流程（整合 Skills）
 
-針對 Spring Boot 分層架構設計的完整 workflow。
+整合 `spring-boot-scaffolds` plugin 的 skills，在 tasks 中混合自動化（skill）與手動步驟。
+
+**適用場景：** 有現成 skills（如 `/scaffold-jpa`、`/gen-api-task`、`/refactor`）可加速開發時。
+
+```
+流程：proposal → specs → design → tasks → apply
+                                   ↑            ↑
+                          含「可自動化元件」  按 🤖/✋ 標籤執行
+```
 
 ```yaml
-name: spring-boot-workflow
+name: spring-boot-dev
 version: 1
-description: Spring Boot backend team workflow with API-first design
+description: Spring Boot 開發流程，整合 scaffold skills 自動化程式碼生成
 
 artifacts:
   - id: proposal
     generates: proposal.md
-    description: 變更提案
+    description: 變更提案，說明動機、範圍和影響
     template: proposal.md
     instruction: |
-      Create a proposal. Focus on:
-      - WHY this change is needed (business value)
-      - WHAT will change (scope)
-      - Impact on existing APIs and services
-      - Rollback strategy
-      - Affected microservices
+      建立變更提案（繁體中文）。必須包含：
+      - 為什麼要做這個變更（業務價值）
+      - 變更範圍（In Scope / Out of Scope）
+      - 受影響的 layers（Controller / Service / Repository）
+      - 是否需要 DB migration
+      - 對現有 API 的向後相容性影響
+      - Rollback 策略
     requires: []
 
   - id: specs
     generates: specs/**/*.md
-    description: Delta specs
+    description: Delta specs，定義新增/修改/移除的需求
     template: spec.md
     instruction: |
-      Create delta specs. Use Given/When/Then format.
-      Include happy path and error scenarios.
-      Include API contract (method, path, request/response).
-    requires: [proposal]
+      建立 delta specs（繁體中文）。
+      - 使用 Given/When/Then 格式撰寫所有 scenario
+      - 包含 happy path 和 error/edge case
+      - API contract 須包含 HTTP method、path、request/response 範例
+      - Response 格式統一使用 ReturnMsg<T>（returnCode, data, msg）
+      - 按 domain 拆分，每個 domain 一個 spec 檔案
+    requires:
+      - proposal
 
   - id: design
     generates: design.md
-    description: 技術設計
+    description: 技術設計文件，含架構決策和實作細節
     template: design.md
     instruction: |
-      Create a technical design. Include:
-      - Which layers are affected (Controller/Service/Repository)
-      - Database schema changes with Flyway migration plan
-      - API design with OpenAPI snippets
-      - Sequence diagrams (Mermaid format)
-      - Performance and concurrency considerations
-    requires: [specs]
+      建立技術設計文件（繁體中文）。必須包含：
+      - 受影響的 layers 和元件
+      - DB schema 變更（Flyway migration SQL）
+      - OpenAPI snippet
+      - Sequence diagram（Mermaid format，使用 autonumber）
+      - Class diagram（Entity 用 @Getter + domain methods，Service 用 Interface + Impl）
+      - Performance / Concurrency 考量
+
+      在「可自動化元件」章節中，標註哪些部分可用以下 skills 自動生成：
+      - /scaffold-jpa：新增 Entity 時，生成 Entity/Repository/Service/Controller/DTO/Mapper
+      - /gen-api-task：有 OpenAPI spec 時，生成 API Interface + DTO
+      - /scaffold-gcp-secret：需要 GCP Secret Manager 整合時
+    requires:
+      - specs
 
   - id: tasks
     generates: tasks.md
-    description: 實作清單
+    description: 實作任務清單，混合 skill 自動步驟與手動步驟
     template: tasks.md
     instruction: |
-      Create implementation tasks. Each task under 4 hours.
-      Include: DB migration, domain layer, repository, service,
-      controller, unit tests, integration tests (Testcontainers),
-      API documentation update.
-    requires: [design]
+      建立實作任務清單（繁體中文）。每個 task 須在 4 小時內完成。
+      每個 task 須標註類型標籤：
+      - 🤖 [自動] — 使用 skill 自動生成
+      - ✋ [手動] — 需要手動撰寫
+
+      任務順序：
+      1. 前置準備（確認 /scaffold-rules 和 /scaffold-static-analysis 已部署）
+      2. DB Migration（Flyway）
+      3. 程式碼骨架生成（/scaffold-jpa 或 /gen-api-task）
+      4. 商業邏輯實作（手動）
+      5. 單元測試 + 整合測試（Testcontainers）
+      6. 品質檢查（/refactor）
+      7. API 文件更新
+
+      根據 design.md 的「可自動化元件」章節決定使用哪些 skills。
+      每個 skill task 須包含完整的 slash command 和參數。
+    requires:
+      - design
 
 apply:
   requires: [tasks]
   tracks: tasks.md
+  instruction: |
+    按照 tasks.md 的順序逐步執行。
+    - 🤖 [自動] 標籤的 task：直接執行對應的 slash command
+    - ✋ [手動] 標籤的 task：依據 design.md 和 specs 實作
+    完成每個 task 後勾選 checkbox。
+```
+
+#### 關鍵設計：`design.md` 的「可自動化元件」章節
+
+這是連接 OpenSpec workflow 和現有 skills 的橋樑：
+
+```markdown
+## 可自動化元件
+
+| 元件 | Skill | 指令 | 說明 |
+|------|-------|------|------|
+| Entity + MVC 全套 | /scaffold-jpa | `/scaffold-jpa OrderEntity` | 新增 Entity 時使用 |
+| API Interface + DTO | /gen-api-task | `/gen-api-task` | 有 OpenAPI spec 時使用 |
+```
+
+AI 在生成 `tasks.md` 時會參考此表，自動編排 🤖 自動步驟。
+
+#### 搭配的 `config.yaml`
+
+```yaml
+schema: spring-boot-dev
+
+context: |
+  ## Available Skills (spring-boot-scaffolds plugin)
+  - /scaffold-jpa — JPA Entity/Repository/Service/Controller/DTO/Mapper 全套生成
+  - /gen-api-task — OpenAPI spec → Java API Interface + DTO
+  - /refactor — 7 階段系統化重構
+  - /scaffold-rules — 部署 coding standards
+  - /scaffold-static-analysis — 部署 Checkstyle + PMD + Git Hooks
+  - /scaffold-gcp-secret — GCP Secret Manager 整合
+
+rules:
+  tasks:
+    - 若涉及新增 Entity，必須包含「🤖 執行 /scaffold-jpa」步驟
+    - 若涉及新 API endpoint 且有 OpenAPI spec，必須包含「🤖 執行 /gen-api-task」步驟
+    - 最後一個功能性 task 必須是「🤖 執行 /refactor 品質檢查」
+```
+
+### 8.5 Spring Boot Analysis — 分析流程（整合 /generate-sd）
+
+從 PRD 出發，經過程式碼掃描和設計決策，最終呼叫 `/generate-sd` skill 產出完整 System Design 文件。
+
+**適用場景：** 拿到 PRD 後，需要先分析現有 codebase 再產出 SD 文件時。
+
+```
+流程：requirements → codebase-scan → design-decisions → system-design
+                                                              ↑
+                                                        呼叫 /generate-sd
+                                                        引用前三個 artifacts
+```
+
+```yaml
+name: spring-boot-analysis
+version: 1
+description: Spring Boot 分析流程，從 PRD 到 System Design 文件（整合 /generate-sd skill）
+
+artifacts:
+  - id: requirements
+    generates: requirements.md
+    description: 需求解析，從 PRD 抽取結構化需求清單
+    template: requirements.md
+    instruction: |
+      解析 PRD 文件，產出結構化需求清單（繁體中文）。
+      - 抽取所有需求 ID（支援 FR-xxx、BE-xxx、NFR-xxx、FEATURE-xxx 格式）
+      - 分類：功能需求 vs 非功能需求
+      - 識別功能類型：新增功能 / 變更需求 / 修復
+      - 列出每個需求的簡要描述和驗收條件
+      - 標註需求間的依賴關係（如有）
+
+      使用者須在提案時提供 PRD 文件路徑。
+    requires: []
+
+  - id: codebase-scan
+    generates: codebase-scan.md
+    description: 程式碼庫掃描報告，分類現有元件為 Reuse/Modify/Create
+    template: codebase-scan.md
+    instruction: |
+      掃描現有 Spring Boot 程式碼庫（繁體中文）。
+      掃描順序：Entity → Repository → Service → Controller → DTO → Mapper → Config
+
+      對每個元件判斷：
+      - ♻️ Reuse（完全可重用，無需修改）
+      - ✏️ Modify（部分符合，需新增欄位或方法）
+      - 🆕 Create（無現有元件，需全新建立）
+
+      產出格式為三張表格（Reuse / Modify / Create），每列包含：
+      - 元件路徑
+      - 元件類型（Entity/Service/Controller 等）
+      - 對應的需求 ID
+      - 用途說明或需要的修改內容
+
+      使用者須在提案時提供程式碼庫根路徑。
+    requires:
+      - requirements
+
+  - id: design-decisions
+    generates: design-decisions.md
+    description: 設計決策紀錄，包含 DB/API/元件設計方案
+    template: design-decisions.md
+    instruction: |
+      根據 requirements 和 codebase-scan 的結果，產出設計決策（繁體中文）。
+      分四個面向：
+
+      1. 元件重用策略：確認哪些元件 Reuse/Modify/Create，說明理由
+      2. 設計方案：針對核心功能提出設計方向（DB schema、API 設計、商業邏輯）
+      3. 資料庫設計：ERD、欄位定義、migration 策略；若使用者有提供現有 schema，進行比對
+      4. 輸出規劃：SD 文件的輸出路徑和檔名
+
+      每個決策須包含：
+      - 決策項目
+      - 可選方案（至少 2 個）
+      - 選定方案和理由
+      - 影響範圍
+    requires:
+      - codebase-scan
+
+  - id: system-design
+    generates: system-design.md
+    description: 完整的 System Design 文件（由 /generate-sd skill 產出）
+    template: system-design.md
+    instruction: |
+      根據前面三個 artifacts 的分析結果，執行 /generate-sd 產出完整的 SD 文件。
+
+      執行前準備：
+      - 將 requirements.md 的需求清單作為 /generate-sd Phase 1 的輸入
+      - 將 codebase-scan.md 的元件分類作為 /generate-sd Phase 2 的輸入
+      - 將 design-decisions.md 的設計決策作為 /generate-sd Phase 3 的輸入
+
+      執行 /generate-sd 時：
+      - Phase 1（輸入解析）：引用 requirements.md，跳過重複解析
+      - Phase 2（程式碼掃描）：引用 codebase-scan.md，跳過重複掃描
+      - Phase 3（互動確認）：引用 design-decisions.md 作為預設方案，僅確認差異
+      - Phase 4-6：正常執行（生成 SD → 品質驗證 → 輸出確認）
+
+      最終 SD 文件須包含：
+      - 文件資訊（版本、日期、相關 PRD）
+      - 後端架構設計（Component diagram）
+      - 資料庫設計（ERD + 資料表規格 + Migration script）
+      - API 設計（Endpoint 總覽 + 詳細規格，Response 使用 ReturnMsg<T>）
+      - Class 設計（Entity class diagram + Service class diagram）
+      - Sequence Diagram（每個 API 的主要流程）
+      - 測試規格（測試案例表）
+      - 附錄：需求追溯矩陣（100% 覆蓋率）
+    requires:
+      - design-decisions
+
+apply:
+  requires: [system-design]
+  tracks: system-design.md
+```
+
+#### 方案 B 的設計理念：為什麼不把 SD template 搬進 OpenSpec？
+
+`/generate-sd` skill 自帶完整的 references（mermaid-patterns、sd-section-guide、spring-boot-scan-guide）和 assets（sd-template）。如果把這些搬進 OpenSpec schema 的 templates 目錄，會導致：
+
+1. **維護兩份**：skill 更新時 schema 也要同步更新
+2. **失去 skill 生態**：`/generate-sd` 的品質驗證、互動確認等邏輯無法用 template 表達
+
+因此採用 **方案 B**：OpenSpec 負責前三個階段的結構化分析（requirements → codebase-scan → design-decisions），最後一個 artifact 引導 AI 呼叫 `/generate-sd`，並將前面的分析結果作為輸入，避免重複工作。
+
+#### 搭配的 `config.yaml`
+
+```yaml
+schema: spring-boot-analysis
+
+context: |
+  ## Available Skills
+  - /generate-sd — PRD → System Design 文件（6 階段互動式流程）
+
+  ## SD 文件規範
+  - Response 格式：ReturnMsg<T>（returnCode, data, msg）
+  - Entity：@Getter + domain methods，Enum 定義在 Entity 內部
+  - Service：Interface + Impl 模式，無 I prefix
+  - DTO：Java record + Jakarta Validation
+  - Mermaid：autonumber, 繁體中文 participant labels
+
+rules:
+  requirements:
+    - 需求 ID 格式必須為 FR-xxx、BE-xxx、NFR-xxx 或 FEATURE-xxx
+    - 必須區分功能需求和非功能需求
+  codebase-scan:
+    - 掃描順序必須為 Entity → Repository → Service → Controller → DTO → Mapper → Config
+    - 每個元件必須標註對應的需求 ID
+  design-decisions:
+    - 每個決策必須包含至少 2 個可選方案
+    - 資料庫設計必須標註欄位來源（PRD / User Schema / AI 推斷）
+  system-design:
+    - 需求追溯矩陣必須達 100% 覆蓋率
+    - 所有 Mermaid diagram 必須遵循 mermaid-patterns 標準
+```
+
+### 8.6 如何選擇 Schema？
+
+| 場景 | 推薦 Schema | 理由 |
+|------|-------------|------|
+| 小功能、hotfix | `rapid` | 最少 overhead，跳過 specs 和 design |
+| 一般開發（無 skills） | `spec-driven` | 內建預設，通用流程 |
+| Spring Boot 開發（有 skills） | `spring-boot-dev` | 整合 scaffold skills，自動化程式碼生成 |
+| 需要先分析再設計 | `spring-boot-analysis` | 結構化分析 + /generate-sd 產出 SD |
+| 需要審核步驟 | `with-review` | design 後加 review gate |
+| 技術選型、複雜問題 | `research-first` | 先研究再提案 |
+| **先分析再開發** | **先 `spring-boot-analysis`，再 `spring-boot-dev`** | 兩條 pipeline 串接 |
+
+#### 串接兩條 Pipeline
+
+先用 `spring-boot-analysis` 產出 SD 文件，再用 `spring-boot-dev` 開發：
+
+```bash
+# Phase 1: 分析（產出 SD）
+openspec new change order-api --schema spring-boot-analysis
+openspec propose order-api
+
+# Phase 2: 開發（基於 SD 實作）
+openspec new change order-api-impl --schema spring-boot-dev
+# 在 proposal 中引用上一步產出的 SD 文件
+openspec propose order-api-impl
+openspec apply order-api-impl
 ```
 
 ---

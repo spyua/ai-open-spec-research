@@ -1,0 +1,91 @@
+# Custom Schema: Spring Boot Development
+# 整合 spring-boot-scaffolds plugin skills 的開發流程
+name: spring-boot-dev
+version: 1
+description: Spring Boot 開發流程，整合 scaffold skills 自動化程式碼生成
+
+artifacts:
+  # 1. Proposal — 為什麼要做、做什麼
+  - id: proposal
+    generates: proposal.md
+    description: 變更提案，說明動機、範圍和影響
+    template: proposal.md
+    instruction: |
+      建立變更提案（繁體中文）。必須包含：
+      - 為什麼要做這個變更（業務價值）
+      - 變更範圍（In Scope / Out of Scope）
+      - 受影響的 layers（Controller / Service / Repository）
+      - 是否需要 DB migration
+      - 對現有 API 的向後相容性影響
+      - Rollback 策略
+    requires: []
+
+  # 2. Specs — 行為規格（Given/When/Then）
+  - id: specs
+    generates: specs/**/*.md
+    description: Delta specs，定義新增/修改/移除的需求
+    template: spec.md
+    instruction: |
+      建立 delta specs（繁體中文）。
+      - 使用 Given/When/Then 格式撰寫所有 scenario
+      - 包含 happy path 和 error/edge case
+      - API contract 須包含 HTTP method、path、request/response 範例
+      - Response 格式統一使用 ReturnMsg<T>（returnCode, data, msg）
+      - 按 domain 拆分，每個 domain 一個 spec 檔案
+    requires:
+      - proposal
+
+  # 3. Design — 技術設計
+  - id: design
+    generates: design.md
+    description: 技術設計文件，含架構決策和實作細節
+    template: design.md
+    instruction: |
+      建立技術設計文件（繁體中文）。必須包含：
+      - 受影響的 layers 和元件
+      - DB schema 變更（Flyway migration SQL）
+      - OpenAPI snippet
+      - Sequence diagram（Mermaid format，使用 autonumber）
+      - Class diagram（Entity 用 @Getter + domain methods，Service 用 Interface + Impl）
+      - Performance / Concurrency 考量
+
+      在「可自動化元件」章節中，標註哪些部分可用以下 skills 自動生成：
+      - /scaffold-jpa：新增 Entity 時，生成 Entity/Repository/Service/Controller/DTO/Mapper
+      - /gen-api-task：有 OpenAPI spec 時，生成 API Interface + DTO
+      - /scaffold-gcp-secret：需要 GCP Secret Manager 整合時
+    requires:
+      - specs
+
+  # 4. Tasks — 實作清單（整合 skills）
+  - id: tasks
+    generates: tasks.md
+    description: 實作任務清單，混合 skill 自動步驟與手動步驟
+    template: tasks.md
+    instruction: |
+      建立實作任務清單（繁體中文）。每個 task 須在 4 小時內完成。
+      每個 task 須標註類型標籤：
+      - 🤖 [自動] — 使用 skill 自動生成
+      - ✋ [手動] — 需要手動撰寫
+
+      任務順序：
+      1. 前置準備（確認 /scaffold-rules 和 /scaffold-static-analysis 已部署）
+      2. DB Migration（Flyway）
+      3. 程式碼骨架生成（/scaffold-jpa 或 /gen-api-task）
+      4. 商業邏輯實作（手動）
+      5. 單元測試 + 整合測試（Testcontainers）
+      6. 品質檢查（/refactor）
+      7. API 文件更新
+
+      根據 design.md 的「可自動化元件」章節決定使用哪些 skills。
+      每個 skill task 須包含完整的 slash command 和參數。
+    requires:
+      - design
+
+apply:
+  requires: [tasks]
+  tracks: tasks.md
+  instruction: |
+    按照 tasks.md 的順序逐步執行。
+    - 🤖 [自動] 標籤的 task：直接執行對應的 slash command
+    - ✋ [手動] 標籤的 task：依據 design.md 和 specs 實作
+    完成每個 task 後勾選 checkbox。
