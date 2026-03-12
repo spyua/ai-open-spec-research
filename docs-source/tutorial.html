@@ -1,0 +1,1777 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenSpec 完整圖文教學</title>
+<style>
+/* ===== Reset & Base ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:'Segoe UI','Microsoft JhengHei','PingFang TC',sans-serif;line-height:1.7;color:#1a1a2e;background:#f8f9fc}
+
+/* ===== Layout ===== */
+.page{display:flex;min-height:100vh}
+.sidebar{position:fixed;top:0;left:0;width:280px;height:100vh;background:linear-gradient(180deg,#1a1a2e 0%,#16213e 100%);color:#ccc;overflow-y:auto;z-index:100;padding:24px 0;transition:transform .3s}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:#444;border-radius:2px}
+.main{margin-left:280px;flex:1;padding:40px 60px 80px;max-width:1100px}
+
+/* Sidebar nav */
+.sidebar .logo{padding:0 24px 20px;font-size:1.4rem;font-weight:700;color:#fff;display:flex;align-items:center;gap:10px}
+.sidebar .logo .badge{font-size:.65rem;background:#e94560;padding:2px 8px;border-radius:10px;color:#fff}
+.sidebar nav a{display:block;padding:7px 24px 7px 28px;color:#aab;text-decoration:none;font-size:.88rem;border-left:3px solid transparent;transition:all .2s}
+.sidebar nav a:hover,.sidebar nav a.active{color:#fff;background:rgba(255,255,255,.06);border-left-color:#e94560}
+.sidebar nav .group{padding:16px 24px 6px;font-size:.72rem;text-transform:uppercase;letter-spacing:1.5px;color:#667}
+
+/* Mobile toggle */
+.menu-toggle{display:none;position:fixed;top:12px;left:12px;z-index:200;background:#1a1a2e;color:#fff;border:none;border-radius:8px;padding:10px 14px;font-size:1.2rem;cursor:pointer}
+
+/* ===== Typography ===== */
+h1{font-size:2.2rem;color:#1a1a2e;margin-bottom:8px;line-height:1.3}
+h2{font-size:1.6rem;color:#16213e;margin:48px 0 16px;padding-bottom:10px;border-bottom:2px solid #e8e8f0}
+h3{font-size:1.2rem;color:#0f3460;margin:32px 0 12px}
+h4{font-size:1.05rem;color:#333;margin:20px 0 8px}
+p{margin:12px 0;color:#333}
+.subtitle{font-size:1.1rem;color:#666;margin-bottom:32px}
+
+/* ===== Hero ===== */
+.hero{background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);color:#fff;padding:48px 40px;border-radius:16px;margin-bottom:40px;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;top:-50%;right:-20%;width:400px;height:400px;background:radial-gradient(circle,rgba(233,69,96,.15),transparent 70%);border-radius:50%}
+.hero h1{color:#fff;font-size:2.4rem;margin-bottom:8px}
+.hero .subtitle{color:#aac}
+.hero .badges{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.hero .badges span{background:rgba(255,255,255,.12);padding:4px 14px;border-radius:20px;font-size:.82rem}
+
+/* ===== Cards ===== */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;margin:20px 0}
+.card{background:#fff;border-radius:12px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid #eef;transition:transform .2s,box-shadow .2s}
+.card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.1)}
+.card .icon{font-size:2rem;margin-bottom:12px}
+.card h4{margin:0 0 8px;color:#0f3460}
+.card p{font-size:.9rem;color:#555;margin:0}
+
+/* ===== Code ===== */
+pre{background:#1e1e2e;color:#cdd6f4;padding:20px 24px;border-radius:10px;overflow-x:auto;font-size:.88rem;line-height:1.6;margin:16px 0;position:relative}
+pre::before{content:attr(data-lang);position:absolute;top:8px;right:12px;font-size:.7rem;color:#666;text-transform:uppercase}
+code{font-family:'Cascadia Code','Fira Code','JetBrains Mono',monospace}
+:not(pre)>code{background:#eef0f8;padding:2px 7px;border-radius:4px;font-size:.88em;color:#c7254e}
+
+/* ===== Tables ===== */
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.9rem}
+th{background:#f0f2f8;padding:12px 16px;text-align:left;font-weight:600;color:#333;border-bottom:2px solid #dde}
+td{padding:10px 16px;border-bottom:1px solid #eef}
+tr:hover td{background:#fafbfe}
+
+/* ===== Diagrams ===== */
+.diagram{background:#fff;border:1px solid #e0e4f0;border-radius:12px;padding:28px;margin:20px 0;overflow-x:auto}
+.diagram pre{background:#f8f9fc;color:#333;border:1px solid #e8e8f0;font-size:.82rem}
+.diagram-title{font-weight:600;color:#0f3460;margin-bottom:12px;font-size:.95rem}
+
+/* ===== Flow Diagrams (CSS) ===== */
+.flow{display:flex;align-items:center;gap:0;margin:20px 0;flex-wrap:wrap;justify-content:center}
+.flow-node{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:12px 22px;border-radius:10px;font-weight:600;font-size:.88rem;text-align:center;min-width:100px;box-shadow:0 3px 10px rgba(102,126,234,.3)}
+.flow-node.green{background:linear-gradient(135deg,#11998e,#38ef7d)}
+.flow-node.orange{background:linear-gradient(135deg,#f2994a,#f2c94c);color:#333}
+.flow-node.red{background:linear-gradient(135deg,#e94560,#c23b5e)}
+.flow-node.blue{background:linear-gradient(135deg,#2196f3,#21cbf3)}
+.flow-node.dark{background:linear-gradient(135deg,#1a1a2e,#16213e)}
+.flow-arrow{font-size:1.4rem;color:#999;padding:0 6px}
+
+/* Vertical flow */
+.vflow{display:flex;flex-direction:column;align-items:center;gap:0;margin:20px auto;max-width:500px}
+.vflow .flow-arrow{transform:rotate(90deg);padding:4px 0}
+
+/* ===== Callout / Tips ===== */
+.callout{padding:16px 20px;border-radius:10px;margin:16px 0;font-size:.92rem}
+.callout.info{background:#e8f4fd;border-left:4px solid #2196f3;color:#1565c0}
+.callout.warn{background:#fff8e1;border-left:4px solid #ffc107;color:#f57f17}
+.callout.tip{background:#e8f5e9;border-left:4px solid #4caf50;color:#2e7d32}
+.callout.important{background:#fce4ec;border-left:4px solid #e94560;color:#c62828}
+.callout strong{display:block;margin-bottom:4px}
+
+/* ===== Steps ===== */
+.steps{counter-reset:step}
+.step{position:relative;padding:20px 20px 20px 64px;margin:12px 0;background:#fff;border-radius:10px;border:1px solid #eef;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.step::before{counter-increment:step;content:counter(step);position:absolute;left:16px;top:20px;width:34px;height:34px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem}
+.step h4{margin:0 0 6px;color:#0f3460}
+.step p{margin:4px 0;font-size:.9rem}
+
+/* ===== Architecture Layers ===== */
+.layers{display:flex;flex-direction:column;gap:4px;margin:20px 0;max-width:600px}
+.layer{padding:14px 20px;border-radius:8px;font-weight:600;text-align:center;color:#fff;font-size:.9rem}
+.layer.l1{background:linear-gradient(90deg,#667eea,#764ba2)}
+.layer.l2{background:linear-gradient(90deg,#2196f3,#21cbf3)}
+.layer.l3{background:linear-gradient(90deg,#11998e,#38ef7d)}
+.layer.l4{background:linear-gradient(90deg,#f2994a,#f2c94c);color:#333}
+.layer.l5{background:linear-gradient(90deg,#e94560,#c23b5e)}
+.layer-arrow{text-align:center;color:#999;font-size:1.2rem;padding:2px}
+
+/* ===== Tags ===== */
+.tag{display:inline-block;padding:3px 10px;border-radius:12px;font-size:.75rem;font-weight:600;margin:2px}
+.tag.auto{background:#e8f5e9;color:#2e7d32}
+.tag.manual{background:#fff3e0;color:#e65100}
+.tag.new{background:#e3f2fd;color:#1565c0}
+.tag.modify{background:#fff8e1;color:#f57f17}
+.tag.reuse{background:#f3e5f5;color:#7b1fa2}
+
+/* ===== Pipeline visual ===== */
+.pipeline{background:linear-gradient(90deg,#f0f2f8,#fff);border:2px solid #dde;border-radius:12px;padding:24px;margin:20px 0}
+.pipeline-label{font-size:.78rem;color:#667eea;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+
+/* ===== Comparison ===== */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:20px 0}
+.compare>div{background:#fff;padding:20px;border-radius:10px;border:1px solid #eef}
+.compare h4{margin-top:0}
+
+/* ===== Checklist ===== */
+.checklist{list-style:none;padding:0}
+.checklist li{padding:6px 0 6px 28px;position:relative;font-size:.9rem}
+.checklist li::before{content:'☐';position:absolute;left:0;color:#667eea;font-size:1.1rem}
+.checklist li.done::before{content:'☑';color:#4caf50}
+
+/* ===== Accordion ===== */
+details{background:#fff;border:1px solid #eef;border-radius:10px;margin:8px 0;overflow:hidden}
+details summary{padding:14px 20px;cursor:pointer;font-weight:600;color:#0f3460;user-select:none;list-style:none}
+details summary::before{content:'▸ ';color:#667eea}
+details[open] summary::before{content:'▾ '}
+details .detail-content{padding:0 20px 16px}
+
+/* ===== Section anchor offset ===== */
+section[id]{scroll-margin-top:20px}
+
+/* ===== Responsive ===== */
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0;padding:20px 20px 60px}
+  .menu-toggle{display:block}
+  .hero{padding:28px 24px}
+  .hero h1{font-size:1.6rem}
+  .compare{grid-template-columns:1fr}
+  .card-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+
+<!-- ===== SIDEBAR ===== -->
+<div class="sidebar">
+  <div class="logo">📐 OpenSpec <span class="badge">v1.2.0</span></div>
+  <nav>
+    <div class="group">概覽</div>
+    <a href="#hero">首頁</a>
+    <a href="#philosophy">設計哲學</a>
+    <a href="#concepts">核心概念</a>
+
+    <div class="group">快速開始</div>
+    <a href="#install">安裝與初始化</a>
+    <a href="#directory">目錄結構</a>
+    <a href="#workflow-modes">兩種工作模式</a>
+
+    <div class="group">系統架構</div>
+    <a href="#architecture">系統架構圖</a>
+    <a href="#dag">DAG 依賴圖</a>
+    <a href="#prompt-assembly">Prompt 組裝機制</a>
+    <a href="#lifecycle">Change 生命週期</a>
+
+    <div class="group">Artifacts</div>
+    <a href="#artifacts">Artifacts 詳解</a>
+    <a href="#delta-specs">Delta Specs</a>
+
+    <div class="group">指令參考</div>
+    <a href="#slash-commands">Slash Commands</a>
+    <a href="#cli-commands">CLI 指令</a>
+
+    <div class="group">客製化</div>
+    <a href="#config">Project Config</a>
+    <a href="#schemas">Schema 系統</a>
+    <a href="#custom-schema">Custom Schema 教學</a>
+    <a href="#templates">Template 撰寫</a>
+    <a href="#i18n">多語言支援</a>
+
+    <div class="group">實戰範例</div>
+    <a href="#schema-examples">範例 Schemas</a>
+    <a href="#pipeline">Pipeline 串接</a>
+    <a href="#plugin-integration">Plugin 整合</a>
+
+    <div class="group">SOP 操作手冊</div>
+    <a href="#sop-init">SOP-1: 首次導入</a>
+    <a href="#sop-daily">SOP-4~6: 日常開發</a>
+    <a href="#sop-explore">SOP-7: 探索性調查</a>
+    <a href="#sop-parallel">SOP-8: 平行開發</a>
+    <a href="#sop-cicd">SOP-12: CI/CD</a>
+
+    <div class="group">附錄</div>
+    <a href="#ai-tools">支援的 AI 工具</a>
+    <a href="#troubleshooting">Troubleshooting</a>
+    <a href="#glossary">名詞對照表</a>
+  </nav>
+</div>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main">
+
+<!-- HERO -->
+<section id="hero">
+<div class="hero">
+  <h1>OpenSpec 完整圖文教學</h1>
+  <p class="subtitle">AI 原生的 Spec 驅動開發框架 — 先對齊，再開發</p>
+  <div class="badges">
+    <span>📦 npm: @fission-ai/openspec</span>
+    <span>⚡ Node.js ≥ 20.19.0</span>
+    <span>📄 MIT License</span>
+    <span>🤖 支援 25+ AI 工具</span>
+  </div>
+</div>
+</section>
+
+<!-- ===== 設計哲學 ===== -->
+<section id="philosophy">
+<h2>🎯 設計哲學</h2>
+<p>OpenSpec 的設計建立在四大原則之上：</p>
+
+<div class="card-grid">
+  <div class="card">
+    <div class="icon">🌊</div>
+    <h4>Fluid（流暢）</h4>
+    <p>沒有 phase gate，透過 DAG 依賴圖自動推導「下一步該做什麼」，讓使用者在準備好時自然推進。</p>
+  </div>
+  <div class="card">
+    <div class="icon">🔄</div>
+    <h4>Iterative（迭代）</h4>
+    <p>每個 Artifact 可獨立產生、修改、重新產生，不需要推倒重來整個流程。</p>
+  </div>
+  <div class="card">
+    <div class="icon">✨</div>
+    <h4>Easy（簡單）</h4>
+    <p>零配置即可開始（內建 spec-driven schema），進階使用者可逐步自訂 schema、context、rules。</p>
+  </div>
+  <div class="card">
+    <div class="icon">🏗️</div>
+    <h4>Brownfield-first（棕地優先）</h4>
+    <p>透過 Delta Specs 機制，支援在既有規格上做增量變更，而非要求從零撰寫完整規格。</p>
+  </div>
+</div>
+
+<div class="callout tip">
+  <strong>💡 一句話總結</strong>
+  OpenSpec 把「AI 幫你寫 code 之前應該產出的文件」拆成<strong>可插拔的骨架零件（artifacts）</strong>，用<strong>可替換的骨架定義（schema）</strong>組裝起來，確保 AI 在動手前跟你對齊。
+</div>
+</section>
+
+<!-- ===== 核心概念 ===== -->
+<section id="concepts">
+<h2>🧩 核心概念</h2>
+
+<h3>五大核心元素</h3>
+<div class="card-grid">
+  <div class="card">
+    <div class="icon">📋</div>
+    <h4>Spec（規格）</h4>
+    <p>描述系統行為的文件，含 Requirements 和 Scenarios。存放在 <code>specs/</code>，是 Source of Truth。</p>
+  </div>
+  <div class="card">
+    <div class="icon">📝</div>
+    <h4>Change（變更提案）</h4>
+    <p>對系統的一次修改，打包為獨立資料夾，含所有 Artifacts。存放在 <code>changes/</code>。</p>
+  </div>
+  <div class="card">
+    <div class="icon">🧱</div>
+    <h4>Artifact（產出物）</h4>
+    <p>Change 中的文件零件 — proposal、specs、design、tasks。由 Schema 定義有哪些、什麼順序。</p>
+  </div>
+  <div class="card">
+    <div class="icon">🔀</div>
+    <h4>Delta Spec（差異規格）</h4>
+    <p>描述 ADDED / MODIFIED / REMOVED 的規格變更，Archive 時合併回 Source of Truth。</p>
+  </div>
+  <div class="card">
+    <div class="icon">📦</div>
+    <h4>Archive（歸檔）</h4>
+    <p>完成 Change 後，Delta Specs 合併到 specs/，Change 移入 archive/ 目錄。</p>
+  </div>
+</div>
+
+<h3>兩大區域</h3>
+<div class="compare">
+  <div style="border-left:4px solid #4caf50">
+    <h4>🟢 specs/（永久規格區）</h4>
+    <p><strong>Source of Truth</strong> — 記錄「系統現在應該做什麼」</p>
+    <p>只在 Archive 時透過 Delta Specs 合併更新，隨著每次 Archive 而成長。</p>
+  </div>
+  <div style="border-left:4px solid #ffc107">
+    <h4>🟡 changes/（變更提案區）</h4>
+    <p><strong>臨時工作區</strong> — 每個變更一個資料夾，含所有 Artifacts</p>
+    <p>完成後歸檔至 <code>archive/</code>。</p>
+  </div>
+</div>
+</section>
+
+<!-- ===== 安裝與初始化 ===== -->
+<section id="install">
+<h2>🚀 安裝與初始化</h2>
+
+<h3>前置條件</h3>
+<div class="callout info">
+  <strong>📌 必要環境</strong>
+  Node.js 20.19.0 以上（<code>node --version</code> 確認）、專案已用 git 管理。
+</div>
+
+<h3>安裝 CLI</h3>
+<pre data-lang="bash"><code># npm
+npm install -g @fission-ai/openspec@latest
+
+# pnpm
+pnpm add -g @fission-ai/openspec@latest
+
+# yarn
+yarn global add @fission-ai/openspec@latest
+
+# bun
+bun add -g @fission-ai/openspec@latest
+
+# 驗證
+openspec --version</code></pre>
+
+<h3>初始化專案</h3>
+<div class="steps">
+  <div class="step">
+    <h4>安裝 CLI</h4>
+    <p><code>npm install -g @fission-ai/openspec@latest</code></p>
+  </div>
+  <div class="step">
+    <h4>初始化</h4>
+    <pre data-lang="bash"><code>cd your-project
+
+# 互動式（會問你要配置哪些 AI 工具）
+openspec init
+
+# 非互動式
+openspec init --tools claude,cursor
+
+# 指定所有工具
+openspec init --tools all</code></pre>
+  </div>
+  <div class="step">
+    <h4>選擇 Profile</h4>
+    <pre data-lang="bash"><code># 查看目前 profile
+openspec config list
+
+# 如果要用 expanded workflow
+openspec config profile
+# → 選擇想要的 workflows
+# → 選擇 delivery mode
+
+# 套用到專案
+openspec update</code></pre>
+  </div>
+  <div class="step">
+    <h4>Commit 初始化結果</h4>
+    <pre data-lang="bash"><code>git add openspec/ .claude/ .cursor/
+git commit -m "chore: initialize OpenSpec"</code></pre>
+  </div>
+</div>
+
+<h3>升級</h3>
+<pre data-lang="bash"><code>npm install -g @fission-ai/openspec@latest
+openspec update    # 重新生成 AI 工具設定檔</code></pre>
+</section>
+
+<!-- ===== 目錄結構 ===== -->
+<section id="directory">
+<h2>📁 目錄結構</h2>
+
+<div class="diagram">
+<div class="diagram-title">初始化後的完整結構</div>
+<pre><code>your-project/
+├── openspec/
+│   ├── config.yaml           ← 專案設定（預設 schema、context、rules）
+│   ├── specs/                ← 🟢 Source of Truth：系統行為規格
+│   │   ├── auth/
+│   │   │   └── spec.md
+│   │   └── payments/
+│   │       └── spec.md
+│   ├── changes/              ← 🟡 變更提案（進行中）
+│   │   └── add-dark-mode/
+│   │       ├── .openspec.yaml    ← 變更 metadata
+│   │       ├── proposal.md       ← 為什麼做、做什麼
+│   │       ├── design.md         ← 怎麼做（技術設計）
+│   │       ├── tasks.md          ← 實作清單（checkbox）
+│   │       └── specs/            ← Delta specs（差異規格）
+│   │           └── ui/
+│   │               └── spec.md
+│   └── schemas/              ← Custom schemas（可選）
+│       └── my-workflow/
+│           ├── schema.yaml
+│           └── templates/
+├── .claude/skills/           ← Claude Code skills
+├── .cursor/skills/           ← Cursor skills
+└── src/                      ← 你的原始碼</code></pre>
+</div>
+</section>
+
+<!-- ===== 兩種工作模式 ===== -->
+<section id="workflow-modes">
+<h2>⚡ 兩種工作模式</h2>
+
+<h3>Core Profile（預設）— 快速路徑</h3>
+<div class="flow">
+  <div class="flow-node">propose</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node green">apply</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node orange">archive</div>
+</div>
+<p>提供 4 個指令：<code>propose</code>、<code>explore</code>、<code>apply</code>、<code>archive</code></p>
+
+<h3>Custom Profile — 完整控制</h3>
+<div class="flow">
+  <div class="flow-node">new</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node">ff / continue</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node green">apply</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node blue">verify</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node orange">archive</div>
+</div>
+<p>可自由選擇啟用的 workflows：<code>new</code>、<code>continue</code>、<code>ff</code>、<code>verify</code>、<code>sync</code>、<code>bulk-archive</code>、<code>onboard</code></p>
+
+<h3>切換方式</h3>
+<pre data-lang="bash"><code>openspec config profile     # 互動式選擇
+openspec config profile core   # 快速切回 core
+openspec update             # 套用到專案</code></pre>
+</section>
+
+<!-- ===== 系統架構 ===== -->
+<section id="architecture">
+<h2>🏛️ 系統架構</h2>
+
+<h3>全景圖</h3>
+<div class="layers">
+  <div class="layer l1">OpenSpec CLI — /opsx:propose · /opsx:apply · /opsx:archive · /opsx:status</div>
+  <div class="layer-arrow">▼</div>
+  <div class="layer l2">Schema Resolution — CLI flag → .openspec.yaml → config.yaml → built-in fallback</div>
+  <div class="layer-arrow">▼</div>
+  <div class="layer l3">資訊收集 — Schema + Config + Change</div>
+  <div class="layer-arrow">▼</div>
+  <div class="layer l4">AI Prompt 組裝 — context + rules + dependencies + template + instruction</div>
+  <div class="layer-arrow">▼</div>
+  <div class="layer l5">Artifact 產出 — proposal.md · specs/**/*.md · design.md · tasks.md</div>
+</div>
+
+<h3>運作流程</h3>
+<div class="steps">
+  <div class="step">
+    <h4>觸發</h4>
+    <p>使用者透過 CLI 或 AI 工具的 Skill/Command 觸發工作流</p>
+  </div>
+  <div class="step">
+    <h4>Schema 解析</h4>
+    <p>系統依優先順序解析出要使用的 Schema</p>
+  </div>
+  <div class="step">
+    <h4>資訊收集</h4>
+    <p>從 Schema、Config、Change 三方收集資訊</p>
+  </div>
+  <div class="step">
+    <h4>Prompt 組裝</h4>
+    <p>組裝完整的 AI Prompt（包含上下文、規則、依賴、模板、指令）</p>
+  </div>
+  <div class="step">
+    <h4>產出</h4>
+    <p>AI 根據 Prompt 產出對應的 Artifact 檔案</p>
+  </div>
+</div>
+</section>
+
+<!-- ===== DAG ===== -->
+<section id="dag">
+<h2>🔗 DAG 依賴圖</h2>
+
+<p>OpenSpec 將工作流建模為<strong>有向無環圖（DAG）</strong>。每個 Artifact 透過 <code>requires</code> 宣告依賴，系統自動推導建置順序。</p>
+
+<h3>內建 spec-driven 依賴圖</h3>
+<div class="diagram">
+<div style="text-align:center">
+  <div class="flow" style="justify-content:center">
+    <div class="flow-node dark">proposal</div>
+  </div>
+  <div style="color:#999;font-size:1.4rem;margin:8px 0">↙ &nbsp;&nbsp;&nbsp;&nbsp; ↘</div>
+  <div class="flow" style="justify-content:center;gap:40px">
+    <div class="flow-node">specs</div>
+    <div class="flow-node blue">design</div>
+  </div>
+  <div style="color:#999;font-size:1.4rem;margin:8px 0">↘ &nbsp;&nbsp;&nbsp;&nbsp; ↙</div>
+  <div class="flow" style="justify-content:center">
+    <div class="flow-node green">tasks</div>
+  </div>
+  <div style="color:#999;font-size:1.4rem;margin:8px 0">↓</div>
+  <div class="flow" style="justify-content:center">
+    <div class="flow-node red">apply（實作）</div>
+  </div>
+</div>
+</div>
+
+<h3>DAG 運作機制</h3>
+<p>系統使用 <strong>Kahn's 演算法</strong>進行拓撲排序，提供三個核心查詢：</p>
+
+<table>
+  <tr><th>方法</th><th>功能</th></tr>
+  <tr><td><code>getNextArtifacts(completed)</code></td><td>返回所有依賴已滿足、可以開始的 Artifact</td></tr>
+  <tr><td><code>getBlocked(completed)</code></td><td>返回尚在等待依賴的 Artifact 及其未完成的依賴</td></tr>
+  <tr><td><code>getBuildOrder()</code></td><td>返回完整的拓撲排序建置順序</td></tr>
+</table>
+
+<div class="callout info">
+  <strong>📌 完成偵測</strong>
+  透過檔案系統：如果 <code>generates</code> 指定的檔案存在（支援 glob 匹配），該 Artifact 即為「已完成」。
+</div>
+
+<div class="callout tip">
+  <strong>💡 Dependencies 是 enablers，不是 gates</strong>
+  它們表示「什麼可以做」，不是「什麼必須做」。你可以跳過 design 如果不需要。specs 和 design 可以平行建立（都只依賴 proposal）。
+</div>
+</section>
+
+<!-- ===== Prompt 組裝 ===== -->
+<section id="prompt-assembly">
+<h2>🧬 AI Prompt 組裝機制</h2>
+
+<p>當使用者執行 <code>openspec instructions &lt;artifact&gt;</code> 時，系統將五層資訊組裝成結構化的 XML Prompt：</p>
+
+<div class="diagram">
+<div class="diagram-title">五層 Prompt 組裝</div>
+<div class="layers" style="max-width:100%">
+  <div class="layer l1">Layer 1: project_context — 來自 config.yaml → context（專案背景）</div>
+  <div class="layer l2">Layer 2: rules — 來自 config.yaml → rules[artifactId]（per-artifact 約束條件）</div>
+  <div class="layer l3">Layer 3: dependencies — 來自 schema.yaml → artifact.requires（依賴檔案路徑與狀態）</div>
+  <div class="layer l4">Layer 4: template — 來自 schemas/&lt;name&gt;/templates/（輸出結構骨架）</div>
+  <div class="layer l5">Layer 5: instruction — 來自 schema.yaml → artifact.instruction（AI 產出指引）</div>
+</div>
+</div>
+
+<h3>組裝後的 Prompt 結構</h3>
+<pre data-lang="xml"><code>&lt;artifact id="proposal" change="add-2fa" schema="spec-driven"&gt;
+
+  &lt;task&gt;Create the proposal artifact for change "add-2fa".&lt;/task&gt;
+
+  &lt;project_context&gt;
+    這是一個使用 TypeScript 的專案...
+  &lt;/project_context&gt;
+
+  &lt;rules&gt;
+    - 必須包含 rollback 章節
+  &lt;/rules&gt;
+
+  &lt;dependencies&gt;
+    &lt;dependency id="proposal" status="done"&gt;
+      &lt;path&gt;openspec/changes/add-2fa/proposal.md&lt;/path&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+
+  &lt;template&gt;
+    # Proposal: {{change-name}}
+    ...
+  &lt;/template&gt;
+
+  &lt;instruction&gt;
+    Create the proposal document...
+  &lt;/instruction&gt;
+
+  &lt;unlocks&gt;Completing this artifact enables: specs, design&lt;/unlocks&gt;
+
+&lt;/artifact&gt;</code></pre>
+</section>
+
+<!-- ===== Change 生命週期 ===== -->
+<section id="lifecycle">
+<h2>🔄 Change 生命週期</h2>
+
+<div class="flow" style="flex-wrap:wrap">
+  <div class="flow-node dark">Create</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node">Generate Artifacts</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node blue">Review</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node green">Implement (Apply)</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node orange">Archive</div>
+</div>
+
+<table style="margin-top:20px">
+  <tr><th>階段</th><th>動作</th><th>產出</th></tr>
+  <tr><td><strong>Create</strong></td><td><code>openspec new change &lt;name&gt;</code></td><td>建立變更目錄，寫入 <code>.openspec.yaml</code></td></tr>
+  <tr><td><strong>Generate</strong></td><td>AI 依 DAG 順序產出</td><td>proposal → specs + design → tasks</td></tr>
+  <tr><td><strong>Review</strong></td><td>人工檢視修改</td><td>確保 Artifact 品質</td></tr>
+  <tr><td><strong>Implement</strong></td><td><code>/opsx:apply</code></td><td>AI 逐項實作並勾選 tasks.md</td></tr>
+  <tr><td><strong>Archive</strong></td><td><code>/opsx:archive</code></td><td>Delta Specs 合併至 specs/，搬至 archive/</td></tr>
+</table>
+</section>
+
+<!-- ===== Artifacts 詳解 ===== -->
+<section id="artifacts">
+<h2>🧱 Artifacts 詳解</h2>
+
+<h3>Artifact 流程</h3>
+<div class="flow">
+  <div class="flow-node dark" style="min-width:130px">
+    <div>📋 proposal</div>
+    <div style="font-size:.7rem;opacity:.8;margin-top:4px">WHY + WHAT</div>
+  </div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node" style="min-width:130px">
+    <div>📝 specs</div>
+    <div style="font-size:.7rem;opacity:.8;margin-top:4px">WHAT changes</div>
+  </div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node blue" style="min-width:130px">
+    <div>🏗️ design</div>
+    <div style="font-size:.7rem;opacity:.8;margin-top:4px">HOW</div>
+  </div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node green" style="min-width:130px">
+    <div>✅ tasks</div>
+    <div style="font-size:.7rem;opacity:.8;margin-top:4px">STEPS</div>
+  </div>
+</div>
+
+<h3>各 Artifact 詳解</h3>
+
+<details>
+  <summary>📋 Proposal (proposal.md) — 為什麼 + 做什麼</summary>
+  <div class="detail-content">
+    <pre data-lang="markdown"><code># Proposal: Add Dark Mode
+
+## Intent
+Users have requested a dark mode option to reduce eye strain.
+
+## Scope
+In scope:
+- Theme toggle in settings
+- System preference detection
+
+Out of scope:
+- Custom color themes (future work)
+
+## Approach
+Use CSS custom properties + React context.
+
+## Rollback Plan
+Revert the theme context and CSS changes.
+
+## Risks
+| Risk | Likelihood | Impact | Mitigation |
+|------|-----------|--------|------------|
+| Flash of unstyled content | Medium | Low | Use prefers-color-scheme |</code></pre>
+    <p><strong>何時更新：</strong>scope 變了、intent 更清楚了、approach 根本性改變</p>
+  </div>
+</details>
+
+<details>
+  <summary>📝 Specs (specs/**/*.md) — Delta 差異規格</summary>
+  <div class="detail-content">
+    <p>描述「什麼在變」，不是整份 spec 重寫。使用 ADDED / MODIFIED / REMOVED 語義。</p>
+    <p>詳見 <a href="#delta-specs">Delta Specs 章節</a>。</p>
+  </div>
+</details>
+
+<details>
+  <summary>🏗️ Design (design.md) — 怎麼做</summary>
+  <div class="detail-content">
+    <pre data-lang="markdown"><code># Design: Add Dark Mode
+
+## Architecture Decisions
+### Decision: Context over Redux
+Using React Context because:
+- Simple binary state
+- No complex transitions
+
+## Sequence Diagram
+```mermaid
+sequenceDiagram
+    participant User
+    participant ThemeToggle
+    participant ThemeContext
+    participant LocalStorage
+    User->>ThemeToggle: Click toggle
+    ThemeToggle->>ThemeContext: setTheme(dark)
+    ThemeContext->>LocalStorage: persist
+```
+
+## Performance Considerations
+- CSS custom properties for zero-cost theme switching</code></pre>
+    <p><strong>何時更新：</strong>實作發現行不通、找到更好的方案、dependency 變了</p>
+  </div>
+</details>
+
+<details>
+  <summary>✅ Tasks (tasks.md) — 實作清單</summary>
+  <div class="detail-content">
+    <pre data-lang="markdown"><code># Tasks
+
+## 1. Theme Infrastructure
+- [ ] 1.1 Create ThemeContext with light/dark state
+- [ ] 1.2 Add CSS custom properties for colors
+- [ ] 1.3 Implement localStorage persistence
+
+## 2. UI Components
+- [ ] 2.1 Create ThemeToggle component
+- [ ] 2.2 Add toggle to settings page
+
+## 3. Testing
+- [ ] 3.1 Unit tests for ThemeContext
+- [ ] 3.2 Visual regression test</code></pre>
+    <p><strong>最佳實踐：</strong>分群組、用階層編號、每個 task 可在一次 session 內完成、完成就打勾 <code>[x]</code></p>
+  </div>
+</details>
+
+<h3>Spec 格式規範</h3>
+<pre data-lang="markdown"><code># Auth Specification
+
+## Requirements
+
+### Requirement: User Authentication
+The system SHALL issue a JWT token upon successful login.
+
+#### Scenario: Valid credentials
+- GIVEN a user with valid credentials
+- WHEN the user submits login form
+- THEN a JWT token is returned
+- AND the user is redirected to dashboard
+
+#### Scenario: Invalid credentials
+- GIVEN invalid credentials
+- WHEN the user submits login form
+- THEN an error message is displayed</code></pre>
+
+<div class="callout info">
+  <strong>📌 RFC 2119 關鍵字</strong>
+  <strong>MUST / SHALL</strong> — 絕對要求｜<strong>SHOULD</strong> — 建議，有例外｜<strong>MAY</strong> — 選用<br>
+  Spec 是行為契約，不是實作計畫：寫可觀察的行為、input/output、error condition，不寫 class name、library 選擇。
+</div>
+</section>
+
+<!-- ===== Delta Specs ===== -->
+<section id="delta-specs">
+<h2>🔀 Delta Specs（差異規格）</h2>
+
+<p>Delta Specs 是 OpenSpec 支援 Brownfield 開發的核心機制。變更提案中的規格檔案描述的是<strong>與現有規格的差異</strong>。</p>
+
+<h3>四種操作語義</h3>
+<table>
+  <tr><th>操作</th><th>語法</th><th>說明</th></tr>
+  <tr><td><span class="tag new">ADDED</span></td><td><code>## ADDED Requirements</code></td><td>新增需求，Archive 時插入至目標規格</td></tr>
+  <tr><td><span class="tag modify">MODIFIED</span></td><td><code>## MODIFIED Requirements</code></td><td>修改既有需求，必須包含完整替換內容</td></tr>
+  <tr><td style="color:#c62828;font-weight:600">REMOVED</td><td><code>## REMOVED Requirements</code></td><td>移除需求，必須包含 Reason 與 Migration</td></tr>
+  <tr><td><span class="tag reuse">RENAMED</span></td><td><code>## RENAMED Requirements</code></td><td>重新命名，使用 FROM: / TO: 格式</td></tr>
+</table>
+
+<h3>Delta Spec 範例</h3>
+<pre data-lang="markdown"><code>## ADDED Requirements
+
+### Requirement: User can enable 2FA
+The system SHALL allow users to enable two-factor authentication.
+
+#### Scenario: Enable 2FA
+- WHEN user navigates to security settings
+- THEN system displays 2FA setup wizard
+
+## MODIFIED Requirements
+
+### Requirement: User login
+The system SHALL require 2FA verification after password authentication
+when 2FA is enabled on the account.
+
+## REMOVED Requirements
+
+### Requirement: Security question verification
+**Reason**: Replaced by 2FA
+**Migration**: Users will be prompted to set up 2FA on next login</code></pre>
+
+<h3>Archive 時的合併順序</h3>
+<div class="vflow">
+  <div class="flow-node" style="width:280px"><span class="tag reuse">1. RENAMED</span> 重新命名 key</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node red" style="width:280px">2. REMOVED 從映射中刪除</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node orange" style="width:280px"><span class="tag modify">3. MODIFIED</span> 完整替換</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node green" style="width:280px"><span class="tag new">4. ADDED</span> 插入（已存在則報錯）</div>
+</div>
+
+<h3>為什麼用 Delta</h3>
+<div class="card-grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+  <div class="card"><h4>增量描述</h4><p>只需描述「什麼變了」，不需重寫整份規格</p></div>
+  <div class="card"><h4>衝突可見</h4><p>MODIFIED 和 REMOVED 明確標示受影響需求</p></div>
+  <div class="card"><h4>可審查</h4><p>Delta 格式讓 reviewer 一眼看出變更範圍</p></div>
+  <div class="card"><h4>可逆</h4><p>Archive 前隨時可調整 Delta 內容</p></div>
+</div>
+</section>
+
+<!-- ===== Slash Commands ===== -->
+<section id="slash-commands">
+<h2>⚡ Slash Commands 參考</h2>
+<p>這些指令在 AI 聊天介面中使用（Claude Code、Cursor、Windsurf 等）</p>
+
+<h3>Core Profile 指令</h3>
+<table>
+  <tr><th>指令</th><th>說明</th><th>範例</th></tr>
+  <tr><td><code>/opsx:propose [name]</code></td><td>一步到位：建立 change + 生成所有 artifacts</td><td><code>/opsx:propose add-dark-mode</code></td></tr>
+  <tr><td><code>/opsx:explore [topic]</code></td><td>探索問題空間，不建立任何 artifact</td><td><code>/opsx:explore rate limiting</code></td></tr>
+  <tr><td><code>/opsx:apply [name]</code></td><td>根據 tasks.md 逐項實作</td><td><code>/opsx:apply</code></td></tr>
+  <tr><td><code>/opsx:archive [name]</code></td><td>歸檔完成的 change</td><td><code>/opsx:archive</code></td></tr>
+</table>
+
+<h3>Custom Profile 額外指令</h3>
+<table>
+  <tr><th>指令</th><th>說明</th></tr>
+  <tr><td><code>/opsx:new [name]</code></td><td>只建立 change scaffold，不生成 artifacts</td></tr>
+  <tr><td><code>/opsx:continue [name]</code></td><td>依 DAG 順序，一次建立一個 artifact</td></tr>
+  <tr><td><code>/opsx:ff [name]</code></td><td>Fast-forward：一次建立所有 planning artifacts</td></tr>
+  <tr><td><code>/opsx:verify [name]</code></td><td>驗證實作符合 artifacts（Completeness / Correctness / Coherence）</td></tr>
+  <tr><td><code>/opsx:sync [name]</code></td><td>手動 merge delta specs 到 main specs</td></tr>
+  <tr><td><code>/opsx:bulk-archive</code></td><td>批量歸檔多個完成的 changes</td></tr>
+  <tr><td><code>/opsx:onboard</code></td><td>互動式教學（約 15-30 分鐘）</td></tr>
+</table>
+
+<h3>不同 AI 工具的語法差異</h3>
+<table>
+  <tr><th>工具</th><th>語法</th></tr>
+  <tr><td>Claude Code</td><td><code>/opsx:propose</code></td></tr>
+  <tr><td>Cursor</td><td><code>/opsx-propose</code></td></tr>
+  <tr><td>Windsurf</td><td><code>/opsx-propose</code></td></tr>
+  <tr><td>Copilot (IDE)</td><td><code>/opsx-propose</code></td></tr>
+  <tr><td>Trae</td><td><code>/openspec-propose</code>（skill-based）</td></tr>
+</table>
+</section>
+
+<!-- ===== CLI Commands ===== -->
+<section id="cli-commands">
+<h2>💻 CLI 指令完整參考</h2>
+<p>這些指令在終端機（terminal）中使用</p>
+
+<h3>Setup</h3>
+<table>
+  <tr><th>指令</th><th>用途</th></tr>
+  <tr><td><code>openspec init [path]</code></td><td>初始化 OpenSpec</td></tr>
+  <tr><td><code>openspec update [path]</code></td><td>升級後重新生成設定檔</td></tr>
+</table>
+
+<h3>Browsing</h3>
+<table>
+  <tr><th>指令</th><th>用途</th></tr>
+  <tr><td><code>openspec list [--specs|--changes]</code></td><td>列出 changes 或 specs</td></tr>
+  <tr><td><code>openspec view</code></td><td>互動式 dashboard</td></tr>
+  <tr><td><code>openspec show &lt;name&gt;</code></td><td>檢視 change 或 spec 詳情</td></tr>
+  <tr><td><code>openspec status --change &lt;name&gt;</code></td><td>查看 artifact 完成狀態</td></tr>
+</table>
+
+<h3>Validation</h3>
+<table>
+  <tr><th>指令</th><th>用途</th></tr>
+  <tr><td><code>openspec validate [name]</code></td><td>驗證結構</td></tr>
+  <tr><td><code>openspec validate --all --strict --json</code></td><td>CI 用嚴格驗證</td></tr>
+</table>
+
+<h3>Schema Management</h3>
+<table>
+  <tr><th>指令</th><th>用途</th></tr>
+  <tr><td><code>openspec schema init &lt;name&gt;</code></td><td>建立新 schema</td></tr>
+  <tr><td><code>openspec schema fork &lt;source&gt; [name]</code></td><td>Fork 現有 schema</td></tr>
+  <tr><td><code>openspec schema validate [name]</code></td><td>驗證 schema</td></tr>
+  <tr><td><code>openspec schema which [name] [--all]</code></td><td>查看 schema 來源</td></tr>
+  <tr><td><code>openspec schemas</code></td><td>列出所有可用 schemas</td></tr>
+  <tr><td><code>openspec templates [--schema &lt;name&gt;]</code></td><td>查看 template 路徑</td></tr>
+  <tr><td><code>openspec instructions [artifact] --change &lt;name&gt;</code></td><td>取得 artifact 生成指示</td></tr>
+</table>
+
+<h3>Config</h3>
+<table>
+  <tr><th>指令</th><th>用途</th></tr>
+  <tr><td><code>openspec config list</code></td><td>列出所有設定</td></tr>
+  <tr><td><code>openspec config get &lt;key&gt;</code></td><td>取得特定設定</td></tr>
+  <tr><td><code>openspec config set &lt;key&gt; &lt;value&gt;</code></td><td>設定值</td></tr>
+  <tr><td><code>openspec config profile</code></td><td>互動式設定 profile</td></tr>
+  <tr><td><code>openspec config edit</code></td><td>用編輯器開啟設定</td></tr>
+</table>
+
+<h3>環境變數</h3>
+<table>
+  <tr><th>變數</th><th>用途</th></tr>
+  <tr><td><code>OPENSPEC_CONCURRENCY</code></td><td>批量驗證並發數（預設 6）</td></tr>
+  <tr><td><code>OPENSPEC_TELEMETRY=0</code></td><td>關閉遙測</td></tr>
+  <tr><td><code>DO_NOT_TRACK=1</code></td><td>同上</td></tr>
+</table>
+</section>
+
+<!-- ===== Project Config ===== -->
+<section id="config">
+<h2>⚙️ Project Config</h2>
+
+<p><code>openspec/config.yaml</code> 是最重要的客製化入口，控制 AI 生成 artifacts 的品質。</p>
+
+<h3>三個設定項</h3>
+<pre data-lang="yaml"><code># openspec/config.yaml
+
+# ① schema — 預設使用的骨架定義
+schema: spec-driven
+
+# ② context — 注入到「所有」artifact 的 AI prompt
+context: |
+  ## Tech Stack
+  - Language: Java 17
+  - Framework: Spring Boot 3.x
+  - Database: PostgreSQL 15 + Flyway
+  - API Style: RESTful, OpenAPI 3.0
+
+  ## Architecture
+  - Layered: Controller → Service → Repository
+  - DDD for core business logic
+
+  ## Conventions
+  - Package: com.company.project.{domain}.{layer}
+  - Integration tests use Testcontainers
+
+# ③ rules — 針對「特定」artifact 的規則
+rules:
+  proposal:
+    - 必須包含 rollback plan
+    - 必須識別受影響的微服務
+  specs:
+    - 使用 Given/When/Then 格式
+    - 必須包含 error scenario
+  design:
+    - 必須包含 sequence diagram（Mermaid）
+    - 必須說明 DB schema 變更
+  tasks:
+    - 每個 task 必須可在 4 小時內完成
+    - 必須包含測試的 task</code></pre>
+
+<h3>差異比較</h3>
+<table>
+  <tr><th>設定項</th><th>注入範圍</th><th>用途</th><th>建議</th></tr>
+  <tr><td><code>schema</code></td><td>—</td><td>預設 schema</td><td>建議設定</td></tr>
+  <tr><td><code>context</code></td><td><strong>所有</strong> artifacts</td><td>描述技術棧、架構、慣例</td><td><strong>強烈建議</strong></td></tr>
+  <tr><td><code>rules.&lt;artifact&gt;</code></td><td>只有<strong>對應</strong> artifact</td><td>針對性生成規則</td><td>視團隊需求</td></tr>
+</table>
+
+<div class="callout warn">
+  <strong>⚠️ Rules 的 key 必須對應 schema 中的 artifact id</strong>
+  內建 spec-driven 的 id 為：<code>proposal</code>、<code>specs</code>、<code>design</code>、<code>tasks</code>。Custom schema 要用你自己定義的 id。
+</div>
+</section>
+
+<!-- ===== Schema 系統 ===== -->
+<section id="schemas">
+<h2>🔧 Schema 系統</h2>
+
+<p>Schema = 可替換的骨架定義，決定你的 workflow 有哪些 artifacts、什麼順序組裝。</p>
+
+<h3>Schema 解析優先順序</h3>
+
+<h4>Schema 名稱的來源（Change 層級）</h4>
+<div class="layers" style="max-width:500px">
+  <div class="layer l5" style="font-size:.85rem">1. --schema CLI flag（最高優先）</div>
+  <div class="layer l1" style="font-size:.85rem">2. .openspec.yaml 中的 schema 欄位</div>
+  <div class="layer l2" style="font-size:.85rem">3. config.yaml 中的 schema 欄位</div>
+  <div class="layer l3" style="font-size:.85rem">4. 內建 fallback：spec-driven（最低優先）</div>
+</div>
+
+<h4>Schema 檔案的查找位置（三層）</h4>
+<div class="layers" style="max-width:500px">
+  <div class="layer l5" style="font-size:.85rem">1. 專案本地：openspec/schemas/&lt;name&gt;/（最高優先）</div>
+  <div class="layer l1" style="font-size:.85rem">2. 使用者全域：$XDG_DATA_HOME/openspec/schemas/</div>
+  <div class="layer l3" style="font-size:.85rem">3. 套件內建：&lt;package&gt;/schemas/（最低優先）</div>
+</div>
+
+<h3>Schema 結構</h3>
+<div class="diagram">
+<pre><code>openspec/schemas/my-workflow/
+├── schema.yaml          # Artifact 定義 + Apply 設定
+└── templates/           # Markdown 模板
+    ├── proposal.md
+    ├── spec.md
+    ├── design.md
+    └── tasks.md</code></pre>
+</div>
+
+<h3>schema.yaml 完整欄位</h3>
+<table>
+  <tr><th>欄位</th><th>必填</th><th>說明</th></tr>
+  <tr><td><code>name</code></td><td>Yes</td><td>Schema 名稱，kebab-case</td></tr>
+  <tr><td><code>version</code></td><td>Yes</td><td>版本號</td></tr>
+  <tr><td><code>description</code></td><td>No</td><td>描述文字</td></tr>
+  <tr><td><code>artifacts</code></td><td>Yes</td><td>Artifact 定義陣列</td></tr>
+  <tr><td><code>artifacts[].id</code></td><td>Yes</td><td>唯一識別碼</td></tr>
+  <tr><td><code>artifacts[].generates</code></td><td>Yes</td><td>輸出檔名，支援 glob</td></tr>
+  <tr><td><code>artifacts[].template</code></td><td>Yes</td><td>templates/ 下的模板檔</td></tr>
+  <tr><td><code>artifacts[].instruction</code></td><td>No</td><td>AI 生成指示</td></tr>
+  <tr><td><code>artifacts[].requires</code></td><td>Yes</td><td>依賴的 artifact id 陣列</td></tr>
+  <tr><td><code>apply.requires</code></td><td>Yes</td><td>進入 apply 前必須完成的 artifacts</td></tr>
+  <tr><td><code>apply.tracks</code></td><td>Yes</td><td>追蹤實作進度的檔案</td></tr>
+</table>
+</section>
+
+<!-- ===== Custom Schema 教學 ===== -->
+<section id="custom-schema">
+<h2>🛠️ Custom Schema 建立教學</h2>
+
+<h3>決策：Fork vs 從零建立</h3>
+<div class="compare">
+  <div style="border-left:4px solid #4caf50">
+    <h4>Fork（推薦）</h4>
+    <p>跟 spec-driven 差異小，只想改 template 或加一個 artifact。</p>
+    <pre data-lang="bash"><code>openspec schema fork spec-driven my-workflow</code></pre>
+  </div>
+  <div style="border-left:4px solid #2196f3">
+    <h4>從零建立</h4>
+    <p>完全不同的流程。</p>
+    <pre data-lang="bash"><code># 互動式
+openspec schema init my-workflow
+
+# 非互動式
+openspec schema init rapid \
+  --description "Rapid iteration" \
+  --artifacts "proposal,tasks" \
+  --default</code></pre>
+  </div>
+</div>
+
+<h3>完整建立流程</h3>
+<div class="steps">
+  <div class="step">
+    <h4>建立 Schema（Fork 或 Init）</h4>
+    <p>選擇適合的方式建立基本結構</p>
+  </div>
+  <div class="step">
+    <h4>修改 schema.yaml</h4>
+    <p>增刪 artifacts、改依賴關係、撰寫 instruction</p>
+  </div>
+  <div class="step">
+    <h4>撰寫 Templates</h4>
+    <p>為每個 artifact 建立對應的 markdown 模板</p>
+  </div>
+  <div class="step">
+    <h4>驗證</h4>
+    <pre data-lang="bash"><code>openspec schema validate my-workflow</code></pre>
+  </div>
+  <div class="step">
+    <h4>設為預設</h4>
+    <pre data-lang="yaml"><code># openspec/config.yaml
+schema: my-workflow</code></pre>
+  </div>
+  <div class="step">
+    <h4>設定對應的 Rules</h4>
+    <p>config.yaml 的 rules key 必須對應 schema.yaml 中的 artifact id</p>
+  </div>
+  <div class="step">
+    <h4>測試</h4>
+    <pre data-lang="bash"><code>openspec schemas                    # 列出所有
+openspec schema which my-workflow    # 確認來源
+openspec instructions proposal --change test --schema my-workflow</code></pre>
+  </div>
+</div>
+</section>
+
+<!-- ===== Template 撰寫 ===== -->
+<section id="templates">
+<h2>📄 Template 撰寫教學</h2>
+
+<h3>基本原則</h3>
+<ul>
+  <li>用 section headers 定義 AI 需要填寫的區塊</li>
+  <li>用 HTML comments 給 AI 指引（不會出現在最終輸出）</li>
+  <li>可以包含範例格式</li>
+</ul>
+
+<h3>Proposal Template 範例</h3>
+<pre data-lang="markdown"><code># Proposal: {{change-name}}
+
+## Intent
+&lt;!-- 為什麼要做這個變更？解決什麼業務問題？ --&gt;
+
+## Scope
+### In Scope
+-
+### Out of Scope
+-
+
+## Approach
+&lt;!-- 高層次的實作方向 --&gt;
+
+## Impact Analysis
+### Affected Services
+### API Changes
+### Database Changes
+
+## Rollback Plan
+
+## Risks
+| Risk | Likelihood | Impact | Mitigation |
+|------|-----------|--------|------------|</code></pre>
+
+<h3>Tasks Template 範例</h3>
+<pre data-lang="markdown"><code># Tasks
+
+## 1. Database Migration
+- [ ] 1.1 Create Flyway migration script
+- [ ] 1.2 Test migration on local DB
+
+## 2. Domain Layer
+- [ ] 2.1 Create/update Entity classes
+- [ ] 2.2 Create/update Value Objects
+
+## 3. Testing
+- [ ] 3.1 Unit tests for Service layer
+- [ ] 3.2 Integration tests with Testcontainers</code></pre>
+</section>
+
+<!-- ===== 多語言支援 ===== -->
+<section id="i18n">
+<h2>🌍 多語言支援</h2>
+
+<p>在 <code>config.yaml</code> 的 <code>context</code> 中加入語言指示即可。</p>
+
+<div class="card-grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
+  <div class="card">
+    <h4>繁體中文</h4>
+    <pre style="font-size:.8rem"><code>context: |
+  語言：繁體中文（zh-TW）
+  所有產出物必須用繁體中文撰寫。
+  技術術語保留英文。</code></pre>
+  </div>
+  <div class="card">
+    <h4>日文</h4>
+    <pre style="font-size:.8rem"><code>context: |
+  言語：日本語
+  すべての成果物は日本語で
+  作成してください。</code></pre>
+  </div>
+  <div class="card">
+    <h4>簡體中文</h4>
+    <pre style="font-size:.8rem"><code>context: |
+  语言：中文（简体）
+  所有产出物必须用简体中文撰写。</code></pre>
+  </div>
+  <div class="card">
+    <h4>西班牙文</h4>
+    <pre style="font-size:.8rem"><code>context: |
+  Idioma: Español
+  Todos los artefactos deben
+  escribirse en español.</code></pre>
+  </div>
+</div>
+</section>
+
+<!-- ===== 範例 Schemas ===== -->
+<section id="schema-examples">
+<h2>📚 實戰範例 Schemas</h2>
+
+<h3>如何選擇 Schema？</h3>
+<table>
+  <tr><th>場景</th><th>推薦 Schema</th><th>流程</th></tr>
+  <tr><td>小功能、hotfix</td><td><code>rapid</code></td><td>proposal → tasks → implement</td></tr>
+  <tr><td>一般開發</td><td><code>spec-driven</code></td><td>proposal → specs + design → tasks → implement</td></tr>
+  <tr><td>需要審核</td><td><code>with-review</code></td><td>proposal → specs → design → review → tasks</td></tr>
+  <tr><td>技術選型</td><td><code>research-first</code></td><td>research → proposal → tasks → implement</td></tr>
+  <tr><td>Spring Boot（有 skills）</td><td><code>spring-boot-dev</code></td><td>proposal → specs → design → tasks（含 🤖/✋）</td></tr>
+  <tr><td>先分析再設計</td><td><code>spring-boot-analysis</code></td><td>requirements → codebase-scan → design-decisions → SD</td></tr>
+</table>
+
+<h3>Rapid — 快速迭代</h3>
+<div class="flow">
+  <div class="flow-node dark">proposal</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node green">tasks</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node red">implement</div>
+</div>
+<pre data-lang="yaml"><code>name: rapid
+version: 1
+description: Fast iteration with minimal overhead
+artifacts:
+  - id: proposal
+    generates: proposal.md
+    template: proposal.md
+    instruction: |
+      Create a brief proposal. Focus on what and why.
+      Skip detailed specs — keep it under 1 page.
+    requires: []
+  - id: tasks
+    generates: tasks.md
+    template: tasks.md
+    requires: [proposal]
+apply:
+  requires: [tasks]
+  tracks: tasks.md</code></pre>
+
+<h3>With-Review — 含審核步驟</h3>
+<div class="flow" style="flex-wrap:wrap">
+  <div class="flow-node dark">proposal</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node">specs</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node blue">design</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node orange">review</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node green">tasks</div>
+</div>
+
+<h3>Research-First — 先研究再提案</h3>
+<div class="flow">
+  <div class="flow-node">research</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node dark">proposal</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node green">tasks</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node red">implement</div>
+</div>
+
+<h3>Spring Boot Dev — 含自動化 Skills</h3>
+<div class="flow" style="flex-wrap:wrap">
+  <div class="flow-node dark">proposal</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node">specs</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node blue">design<br><span style="font-size:.65rem">標註可自動化元件</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node green">tasks<br><span style="font-size:.65rem">🤖 自動 / ✋ 手動</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node red">apply</div>
+</div>
+
+<div class="callout tip">
+  <strong>💡 Tasks 標註類型</strong>
+  <span class="tag auto">🤖 自動</span> 使用 skill 自動生成（如 <code>/scaffold-jpa</code>）<br>
+  <span class="tag manual">✋ 手動</span> 需要手動撰寫
+</div>
+
+<h3>Spring Boot Analysis — 分析流程</h3>
+<div class="flow" style="flex-wrap:wrap">
+  <div class="flow-node dark">requirements<br><span style="font-size:.65rem">解析 PRD</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node">codebase-scan<br><span style="font-size:.65rem">♻️ ✏️ 🆕</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node blue">design-decisions</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node red">system-design<br><span style="font-size:.65rem">呼叫 /generate-sd</span></div>
+</div>
+
+<h4>Codebase Scan 的三種分類</h4>
+<table>
+  <tr><th>標記</th><th>分類</th><th>說明</th></tr>
+  <tr><td><span class="tag reuse">♻️ Reuse</span></td><td>完全可重用</td><td>無需修改</td></tr>
+  <tr><td><span class="tag modify">✏️ Modify</span></td><td>部分符合</td><td>需新增欄位或方法</td></tr>
+  <tr><td><span class="tag new">🆕 Create</span></td><td>無現有元件</td><td>需全新建立</td></tr>
+</table>
+</section>
+
+<!-- ===== Pipeline 串接 ===== -->
+<section id="pipeline">
+<h2>🔗 Pipeline 串接</h2>
+
+<p>在大型專案中，可以定義多個 Schema 並在不同階段使用，形成 Pipeline 串接。</p>
+
+<h3>範例：Spring Boot 分析 → 開發</h3>
+
+<div class="pipeline">
+  <div class="pipeline-label">Pipeline 1: spring-boot-analysis</div>
+  <div class="flow" style="flex-wrap:wrap">
+    <div class="flow-node dark">requirements</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">codebase-scan</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node blue">design-decisions</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node red">system-design</div>
+  </div>
+  <p style="text-align:center;color:#667;font-size:.85rem;margin-top:8px">目的：分析現有系統，產出理解文件與改善規格</p>
+</div>
+
+<div style="text-align:center;font-size:1.6rem;color:#667eea;margin:12px 0">⬇ 產出的 specs 成為下一條 Pipeline 的輸入 ⬇</div>
+
+<div class="pipeline">
+  <div class="pipeline-label">Pipeline 2: spring-boot-dev</div>
+  <div class="flow" style="flex-wrap:wrap">
+    <div class="flow-node dark">proposal</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node">specs</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node blue">design</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node green">tasks</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-node red">apply</div>
+  </div>
+  <p style="text-align:center;color:#667;font-size:.85rem;margin-top:8px">目的：基於分析結果，規劃並實作具體變更</p>
+</div>
+
+<h3>串接指令</h3>
+<pre data-lang="bash"><code># Phase 1: 分析（產出 SD）
+openspec new change order-api --schema spring-boot-analysis
+openspec propose order-api
+
+# Phase 2: 開發（基於 SD 實作）
+openspec new change order-api-impl --schema spring-boot-dev
+openspec propose order-api-impl
+openspec apply order-api-impl</code></pre>
+</section>
+
+<!-- ===== Plugin 整合 ===== -->
+<section id="plugin-integration">
+<h2>🔌 Plugin 整合</h2>
+
+<div class="callout important">
+  <strong>🔑 關鍵理解</strong>
+  OpenSpec 不呼叫 Plugin，OpenSpec 產出的文件（design.md、tasks.md）裡「寫著」要 AI 去呼叫哪些 Plugin 的 slash command。整合是透過 AI prompt instruction 實現的「文字層串接」，不是程式碼層的 API 呼叫。
+</div>
+
+<h3>兩個專案的角色</h3>
+<div class="compare">
+  <div style="border-left:4px solid #667eea">
+    <h4>📐 OpenSpec — 編排者</h4>
+    <p>管「做事的順序」— 透過 Schema 定義 Artifact DAG，決定先產 proposal、再寫 spec、再出 design、最後列 tasks。</p>
+  </div>
+  <div style="border-left:4px solid #e94560">
+    <h4>🔧 Plugin — 執行者</h4>
+    <p>管「怎麼做事」— 提供具體的 slash command（<code>/scaffold-jpa</code>、<code>/generate-sd</code> 等），AI 呼叫後自動生成程式碼。</p>
+  </div>
+</div>
+
+<h3>整合架構</h3>
+<div class="diagram">
+<pre><code>┌─────────────────────────────────────────────┐
+│              你的 Spring Boot 專案             │
+│                                               │
+│  openspec/           ← OpenSpec 管「流程」     │
+│  ├── config.yaml                              │
+│  ├── schemas/spring-boot-dev/                 │
+│  └── changes/add-2fa/                         │
+│      ├── design.md  ← 裡面「寫」要用哪些       │
+│      │                 plugin skills          │
+│      └── tasks.md   ← 裡面「列」要跑哪些       │
+│                        slash commands         │
+│                                               │
+│  .claude/            ← Plugin 管「執行」       │
+│  ├── commands/                                │
+│  │   ├── scaffold-jpa.md     ← 來自 plugin   │
+│  │   ├── generate-sd.md      ← 來自 plugin   │
+│  │   └── gen-api-task.md     ← 來自 plugin   │
+│  └── rules/coding-standards.md               │
+└─────────────────────────────────────────────┘</code></pre>
+</div>
+
+<h3>串接靠 AI 理解自然語言</h3>
+<p>Schema 的 <code>instruction</code> 欄位用自然語言告訴 AI「到這一步請呼叫 <code>/scaffold-jpa</code>」，AI 讀懂後自行呼叫。<strong>不需要任何程式碼整合</strong>。</p>
+</section>
+
+<!-- ===== SOP 操作手冊 ===== -->
+<section id="sop-init">
+<h2>📋 SOP-1: 首次導入 OpenSpec</h2>
+
+<div class="steps">
+  <div class="step">
+    <h4>安裝 CLI</h4>
+    <pre data-lang="bash"><code>npm install -g @fission-ai/openspec@latest
+openspec --version   # 預期：1.x.x</code></pre>
+  </div>
+  <div class="step">
+    <h4>初始化</h4>
+    <pre data-lang="bash"><code>cd your-project
+openspec init          # 互動式
+# 或
+openspec init --tools claude,cursor</code></pre>
+  </div>
+  <div class="step">
+    <h4>選擇 Profile</h4>
+    <pre data-lang="bash"><code>openspec config list    # 查看目前 profile
+openspec config profile  # 如果需要 expanded workflow
+openspec update</code></pre>
+  </div>
+  <div class="step">
+    <h4>Commit</h4>
+    <pre data-lang="bash"><code>git add openspec/ .claude/ .cursor/
+git commit -m "chore: initialize OpenSpec"</code></pre>
+  </div>
+</div>
+
+<h3>完成確認</h3>
+<ul class="checklist">
+  <li class="done"><code>openspec --version</code> 有輸出</li>
+  <li class="done"><code>openspec/config.yaml</code> 存在</li>
+  <li class="done"><code>openspec/specs/</code> 目錄存在</li>
+  <li class="done"><code>openspec/changes/</code> 目錄存在</li>
+  <li class="done">AI 工具的 skills 目錄存在</li>
+  <li class="done">已 commit 到 git</li>
+</ul>
+</section>
+
+<section id="sop-daily">
+<h2>📋 SOP-4~6: 日常開發</h2>
+
+<h3>SOP-4: 新功能（快速路徑）</h3>
+<div class="callout info">
+  <strong>適用：</strong>需求明確、scope 清楚的功能開發。使用 Core Profile。
+</div>
+
+<div class="steps">
+  <div class="step">
+    <h4>提案 + 生成全部 Artifacts</h4>
+    <pre data-lang="bash"><code>/opsx:propose add-dark-mode</code></pre>
+  </div>
+  <div class="step">
+    <h4>審核 Artifacts</h4>
+    <ul class="checklist">
+      <li>proposal 的 scope 正確</li>
+      <li>specs 的 scenarios 覆蓋 happy path 和 error cases</li>
+      <li>design 的技術方案合理</li>
+      <li>tasks 的粒度適當、順序正確</li>
+    </ul>
+  </div>
+  <div class="step">
+    <h4>實作</h4>
+    <pre data-lang="bash"><code>/opsx:apply</code></pre>
+  </div>
+  <div class="step">
+    <h4>歸檔</h4>
+    <pre data-lang="bash"><code>/opsx:archive</code></pre>
+  </div>
+  <div class="step">
+    <h4>Commit</h4>
+    <pre data-lang="bash"><code>git add .
+git commit -m "feat: add dark mode support"</code></pre>
+  </div>
+</div>
+
+<h3>SOP-5: 新功能（逐步控制）</h3>
+<div class="callout info">
+  <strong>適用：</strong>需求複雜、需要逐步審核。需要 Custom Profile。
+</div>
+<div class="flow" style="flex-wrap:wrap">
+  <div class="flow-node dark">/opsx:new</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node">/opsx:continue<br><span style="font-size:.65rem">×4（逐步審核）</span></div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node green">/opsx:apply</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node blue">/opsx:verify</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node orange">/opsx:archive</div>
+</div>
+
+<h3>SOP-6: Bug 修復</h3>
+<div class="callout info">
+  <strong>適用：</strong>Bug fix，scope 通常較小。
+</div>
+<div class="flow">
+  <div class="flow-node dark">propose</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node blue">快速審核</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node green">apply</div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-node orange">archive</div>
+</div>
+</section>
+
+<section id="sop-explore">
+<h2>📋 SOP-7: 探索性調查</h2>
+<div class="callout info">
+  <strong>適用：</strong>需求不明確、需要先調查再決定做什麼。
+</div>
+
+<div class="steps">
+  <div class="step">
+    <h4>開始探索</h4>
+    <pre data-lang="bash"><code>/opsx:explore</code></pre>
+  </div>
+  <div class="step">
+    <h4>描述問題</h4>
+    <p>例如：「我想改善 API 的 response time，但不確定瓶頸在哪。」</p>
+  </div>
+  <div class="step">
+    <h4>深入討論</h4>
+    <p>跟 AI 來回討論，直到確定方向。</p>
+  </div>
+  <div class="step">
+    <h4>轉入正式流程</h4>
+    <pre data-lang="bash"><code>/opsx:propose optimize-product-query</code></pre>
+  </div>
+</div>
+</section>
+
+<section id="sop-parallel">
+<h2>📋 SOP-8: 平行開發</h2>
+<div class="callout info">
+  <strong>適用：</strong>同時進行多個功能、被 urgent bug 打斷時。
+</div>
+
+<h3>場景：正在做 Feature A，被 Bug B 打斷</h3>
+<div class="diagram">
+<pre><code>Feature A: /opsx:propose add-dark-mode → /opsx:apply（進行中）
+                                              │
+                                         context switch
+                                              │
+Bug B:     /opsx:propose fix-login-bug → /opsx:apply → /opsx:archive
+                                              │
+                                         切回 Feature A
+                                              │
+Feature A: /opsx:apply add-dark-mode → /opsx:archive</code></pre>
+</div>
+
+<p>Feature A 的 tasks.md 中已完成的 task 會保留 <code>[x]</code>，不需要特別操作。查看所有進行中的 Changes：</p>
+<pre data-lang="bash"><code>openspec list</code></pre>
+</section>
+
+<section id="sop-cicd">
+<h2>📋 SOP-12: CI/CD 整合</h2>
+
+<h3>GitHub Actions 範例</h3>
+<pre data-lang="yaml"><code># .github/workflows/openspec-validate.yml
+name: OpenSpec Validation
+
+on:
+  pull_request:
+    paths:
+      - 'openspec/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install OpenSpec
+        run: npm install -g @fission-ai/openspec@latest
+      - name: Validate
+        run: openspec validate --all --strict --json</code></pre>
+
+<h3>驗證指令</h3>
+<table>
+  <tr><th>指令</th><th>用途</th></tr>
+  <tr><td><code>openspec validate --all --strict --json</code></td><td>CI 用嚴格驗證全部</td></tr>
+  <tr><td><code>openspec validate --changes --json</code></td><td>只驗證 changes</td></tr>
+  <tr><td><code>openspec validate --specs --json</code></td><td>只驗證 specs</td></tr>
+  <tr><td><code>openspec schema validate --json</code></td><td>驗證 custom schemas</td></tr>
+</table>
+</section>
+
+<!-- ===== Apply 與進度追蹤 ===== -->
+<section id="apply-tracking" style="margin-top:48px">
+<h2>📊 Apply 與進度追蹤</h2>
+
+<p>Apply 階段是 AI 根據 <code>tasks.md</code> 逐項實作的過程。Schema 的 <code>apply.tracks</code> 指向 Markdown 檔案，系統解析其中的 checkbox 追蹤進度。</p>
+
+<pre data-lang="markdown"><code>## 1. Setup
+- [x] 1.1 Create new module structure        ← 已完成
+- [x] 1.2 Add dependencies to package.json   ← 已完成
+
+## 2. Core Implementation
+- [ ] 2.1 Implement 2FA verification logic    ← 待完成
+- [ ] 2.2 Add TOTP library integration        ← 待完成</code></pre>
+
+<h3>Apply 狀態機</h3>
+<div class="diagram">
+<div style="text-align:center">
+  <div class="flow" style="justify-content:center">
+    <div class="flow-node dark">檢查 apply.requires</div>
+  </div>
+  <div style="color:#999;margin:8px 0">↙ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ↘</div>
+  <div class="flow" style="justify-content:center;gap:40px">
+    <div class="flow-node red" style="min-width:160px">requires 未滿足<br><strong>blocked</strong></div>
+    <div class="flow-node green" style="min-width:160px">requires 已滿足<br><strong>ready / all_done</strong></div>
+  </div>
+</div>
+</div>
+</section>
+
+<!-- ===== Profile 系統 ===== -->
+<section id="profile-system" style="margin-top:48px">
+<h2>👤 Profile 系統</h2>
+
+<p>Profile 控制<strong>安裝哪些工作流</strong>（Skill/Command）。</p>
+
+<div class="compare">
+  <div style="border-left:4px solid #4caf50">
+    <h4>Core Profile（預設）</h4>
+    <table>
+      <tr><td><code>propose</code></td><td>啟動變更提案</td></tr>
+      <tr><td><code>explore</code></td><td>探索現有規格</td></tr>
+      <tr><td><code>apply</code></td><td>根據 tasks 實作</td></tr>
+      <tr><td><code>archive</code></td><td>歸檔變更</td></tr>
+    </table>
+  </div>
+  <div style="border-left:4px solid #667eea">
+    <h4>Custom Profile（完整 11 個）</h4>
+    <table>
+      <tr><td><code>new</code></td><td>建立 change</td></tr>
+      <tr><td><code>continue</code></td><td>續建 Artifact</td></tr>
+      <tr><td><code>ff</code></td><td>快速前進</td></tr>
+      <tr><td><code>sync</code></td><td>同步 Skill 檔案</td></tr>
+      <tr><td><code>verify</code></td><td>驗證完整性</td></tr>
+      <tr><td><code>bulk-archive</code></td><td>批次歸檔</td></tr>
+      <tr><td><code>onboard</code></td><td>新人引導</td></tr>
+    </table>
+  </div>
+</div>
+
+<h3>Delivery 模式</h3>
+<table>
+  <tr><th>模式</th><th>說明</th></tr>
+  <tr><td><code>both</code></td><td>同時產生 Skill 與 Command 檔案（預設）</td></tr>
+  <tr><td><code>skills</code></td><td>僅產生 Skill 檔案</td></tr>
+  <tr><td><code>commands</code></td><td>僅產生 Command 檔案</td></tr>
+</table>
+</section>
+
+<!-- ===== 支援的 AI 工具 ===== -->
+<section id="ai-tools">
+<h2>🤖 支援的 AI 工具</h2>
+
+<p>OpenSpec 支援 <strong>25+</strong> AI 工具，<code>openspec init</code> 時選擇：</p>
+
+<table>
+  <tr><th>工具</th><th>Skills 路徑</th><th>Commands 路徑</th></tr>
+  <tr><td>Claude Code</td><td><code>.claude/skills/openspec-*/SKILL.md</code></td><td><code>.claude/commands/opsx/</code></td></tr>
+  <tr><td>Cursor</td><td><code>.cursor/skills/openspec-*/SKILL.md</code></td><td><code>.cursor/commands/opsx-*.md</code></td></tr>
+  <tr><td>Windsurf</td><td><code>.windsurf/skills/</code></td><td><code>.windsurf/workflows/</code></td></tr>
+  <tr><td>GitHub Copilot</td><td><code>.github/skills/</code></td><td><code>.github/prompts/</code></td></tr>
+  <tr><td>Cline</td><td><code>.cline/skills/</code></td><td><code>.clinerules/workflows/</code></td></tr>
+  <tr><td>Kiro</td><td><code>.kiro/skills/</code></td><td><code>.kiro/prompts/</code></td></tr>
+  <tr><td>Codex</td><td><code>.codex/skills/</code></td><td><code>$CODEX_HOME/prompts/</code></td></tr>
+  <tr><td>RooCode</td><td><code>.roo/skills/</code></td><td><code>.roo/commands/</code></td></tr>
+  <tr><td>Gemini CLI</td><td><code>.gemini/skills/</code></td><td><code>.gemini/commands/</code></td></tr>
+</table>
+
+<p style="color:#666;font-size:.88rem">還有：Amazon Q、Antigravity、Auggie、CodeBuddy、Continue、CoStrict、Crush、Factory、iFlow、Kilo Code、OpenCode、Pi、Qoder、Qwen、Trae</p>
+</section>
+
+<!-- ===== Troubleshooting ===== -->
+<section id="troubleshooting">
+<h2>🔧 Troubleshooting</h2>
+
+<table>
+  <tr><th>問題</th><th>原因</th><th>解法</th></tr>
+  <tr><td>Change not found</td><td>未指定名稱</td><td>指定：<code>/opsx:apply add-dark-mode</code>；<code>openspec list</code> 確認</td></tr>
+  <tr><td>No artifacts ready</td><td>前置 artifact 未完成</td><td><code>openspec status --change &lt;name&gt;</code> 看什麼 blocked</td></tr>
+  <tr><td>Schema not found</td><td>拼字錯誤或路徑不對</td><td><code>openspec schemas</code> 列出所有</td></tr>
+  <tr><td>Commands not recognized</td><td>設定檔未更新</td><td><code>openspec init</code> + <code>openspec update</code>；重啟 AI 工具</td></tr>
+  <tr><td>Artifacts 品質差</td><td>context/rules 不夠具體</td><td>在 config.yaml 加詳細的 context 和 rules</td></tr>
+  <tr><td>Template not found</td><td>schema.yaml template 欄位指向不存在的檔案</td><td><code>openspec schema validate</code></td></tr>
+  <tr><td>Rules 沒生效</td><td>rules key 跟 artifact id 不一致</td><td>確認 key 對應 schema 中的 artifacts[].id</td></tr>
+  <tr><td>Circular dependency</td><td>A requires B, B requires A</td><td><code>openspec schema validate</code> 會偵測</td></tr>
+</table>
+
+<h3>設定 Custom Schema 前的 Checklist</h3>
+<ul class="checklist">
+  <li>config.yaml — schema 設為 custom schema 名稱</li>
+  <li>config.yaml — context 描述了技術棧和架構</li>
+  <li>config.yaml — rules 針對每個 artifact 設了規則</li>
+  <li>schema.yaml — 定義了所有需要的 artifacts</li>
+  <li>schema.yaml — 依賴關係正確（無循環）</li>
+  <li>schema.yaml — apply.requires 和 apply.tracks 正確</li>
+  <li>templates/ — 每個 artifact 都有對應的模板檔</li>
+  <li><code>openspec schema validate</code> 通過</li>
+  <li><code>openspec instructions</code> 確認 prompt 正確</li>
+</ul>
+</section>
+
+<!-- ===== 名詞對照表 ===== -->
+<section id="glossary">
+<h2>📖 名詞對照表</h2>
+
+<table>
+  <tr><th>英文</th><th>中文</th><th>說明</th></tr>
+  <tr><td>Artifact</td><td>骨架零件 / 產出物</td><td>change 中的文件（proposal、design、tasks、specs）</td></tr>
+  <tr><td>Schema</td><td>骨架定義</td><td>定義 artifacts 類型和依賴關係的 workflow 配置</td></tr>
+  <tr><td>Change</td><td>變更提案</td><td>對系統的一次修改，打包為資料夾</td></tr>
+  <tr><td>Delta Spec</td><td>差異規格</td><td>描述 ADDED/MODIFIED/REMOVED 的規格變更</td></tr>
+  <tr><td>Spec</td><td>規格</td><td>描述系統行為的文件，含 requirements 和 scenarios</td></tr>
+  <tr><td>Archive</td><td>歸檔</td><td>完成 change 並 merge delta specs 到 main specs</td></tr>
+  <tr><td>Domain</td><td>領域</td><td>specs 的邏輯分群（如 auth/、payments/）</td></tr>
+  <tr><td>Requirement</td><td>需求</td><td>系統必須具備的特定行為</td></tr>
+  <tr><td>Scenario</td><td>情境</td><td>需求的具體範例，通常用 Given/When/Then</td></tr>
+  <tr><td>Source of Truth</td><td>真相之源</td><td><code>openspec/specs/</code> 目錄，包含當前已確認的行為</td></tr>
+  <tr><td>Profile</td><td>配置檔</td><td>決定啟用哪些 workflow commands（core / custom）</td></tr>
+  <tr><td>Delivery</td><td>交付方式</td><td>skills only / commands only / both</td></tr>
+</table>
+</section>
+
+<!-- ===== 快速參考卡 ===== -->
+<section id="quick-ref" style="margin-top:48px">
+<h2>⚡ 快速參考卡</h2>
+
+<h3>日常最常用的指令</h3>
+<table>
+  <tr><th>場景</th><th>指令</th></tr>
+  <tr><td>開始新功能</td><td><code>/opsx:propose feature-name</code></td></tr>
+  <tr><td>探索問題</td><td><code>/opsx:explore</code></td></tr>
+  <tr><td>開始實作</td><td><code>/opsx:apply</code></td></tr>
+  <tr><td>歸檔完成</td><td><code>/opsx:archive</code></td></tr>
+  <tr><td>查看進度</td><td><code>openspec status --change name</code></td></tr>
+  <tr><td>列出所有 changes</td><td><code>openspec list</code></td></tr>
+  <tr><td>驗證結構</td><td><code>openspec validate --all</code></td></tr>
+</table>
+
+<h3>決策樹：該用哪個流程？</h3>
+<div class="diagram">
+<pre><code>你要做什麼？
+│
+├── 需求明確，要開始做 ──────────────► SOP-4（快速路徑）
+│
+├── 需求複雜，想逐步審核 ───────────► SOP-5（逐步控制）
+│
+├── 修 Bug ─────────────────────────► SOP-6（Bug 修復）
+│
+├── 不確定要做什麼，先調查 ──────────► SOP-7（探索）
+│
+├── 被其他事打斷 ───────────────────► SOP-8（平行開發）
+│
+├── 多個 changes 要歸檔 ────────────► SOP-9（批量歸檔）
+│
+├── 新人加入 ───────────────────────► SOP-11（Onboarding）
+│
+└── 第一次導入 ─────────────────────► SOP-1 → SOP-2 → (SOP-3)</code></pre>
+</div>
+</section>
+
+<!-- ===== Footer ===== -->
+<div style="margin-top:60px;padding:30px 0;border-top:2px solid #eef;text-align:center;color:#999;font-size:.85rem">
+  <p>📐 OpenSpec v1.2.0 — AI 原生的 Spec 驅動開發框架</p>
+  <p>Fission AI · MIT License · <a href="https://github.com/Fission-AI/OpenSpec" style="color:#667eea">GitHub</a> · discord.gg/YctCnvvshC</p>
+</div>
+
+</div><!-- .main -->
+
+<!-- ===== Scroll to top ===== -->
+<script>
+// Sidebar active link tracking
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.sidebar nav a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 100) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+});
+// Close sidebar on mobile when clicking a link
+navLinks.forEach(a => a.addEventListener('click', () => {
+  if (window.innerWidth <= 900) document.querySelector('.sidebar').classList.remove('open');
+}));
+</script>
+
+</body>
+</html>

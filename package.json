@@ -1,0 +1,29 @@
+{
+  "name": "ai-open-spec-research",
+  "version": "1.0.0",
+  "description": "> **OpenSpec = 可插拔的規格骨架 (Pluggable Spec Scaffold)**\r > 它不是一個死板的流程框架，而是一套可組裝、可替換的「規格產出骨架」，讓 AI 在寫 code 之前先跟你對齊「要做什麼」。",
+  "type": "module",
+  "directories": {
+    "doc": "docs",
+    "example": "examples"
+  },
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spyua/ai-open-spec-research.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/spyua/ai-open-spec-research/issues"
+  },
+  "homepage": "https://github.com/spyua/ai-open-spec-research#readme",
+  "devDependencies": {
+    "vitepress": "^1.6.4"
+  }
+}
