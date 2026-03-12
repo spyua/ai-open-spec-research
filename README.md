@@ -715,10 +715,11 @@ Change A: /opsx:apply add-2fa → /opsx:archive
 | 文件 | 內容 |
 |------|------|
 | [STRUCTURE.md](STRUCTURE.md) | 專案結構說明與建議閱讀順序 |
-| [customization-guide.md](docs/customization-guide.md) | 客製化設定完整指南（Config / Schema / Template） |
-| [sop.md](docs/sop.md) | 操作 SOP（12 個具體流程，含指令和 checklist） |
-| [architecture.md](docs/architecture.md) | 架構分析：OpenSpec 內部設計與運作原理 |
-| [sample-project/](sample-project/) | Spring Boot 範例專案 |
+| [docs/architecture.md](docs/architecture.md) | 設計概念：系統架構圖、DAG、Delta Specs、Prompt 組裝機制 |
+| [docs/customization-guide.md](docs/customization-guide.md) | 客製化設定完整指南（Config / Schema / Template） |
+| [docs/plugin-integration.md](docs/plugin-integration.md) | 整合說明：OpenSpec 如何與 Spring Boot Plugin 串接 |
+| [docs/sop.md](docs/sop.md) | 操作 SOP（12 個具體流程，含指令和 checklist） |
+| [sample-project/](sample-project/) | Spring Boot 範例專案（三套自訂 schema） |
 | [examples/](examples/) | 各種 config 和 schema 範例 |
 
 ## 參考資源

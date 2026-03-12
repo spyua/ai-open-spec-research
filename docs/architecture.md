@@ -112,6 +112,8 @@ rules:                       # 按 artifact ID 分組的約束規則
 
 ### 3.2 Schema（`schema.yaml`）
 
+> **為什麼叫 Schema？** 跟 DB Schema、JSON Schema 同理 —— Schema 的意思是「結構定義」。它**只描述「工作流的骨架長什麼樣子」**（有哪些 Artifact、什麼依賴順序、什麼模板），不描述「怎麼執行」。具體怎麼跑 prompt、用哪個 AI，是 OpenSpec 引擎的事。就像 DB Schema 定義表結構但不管 SQL 怎麼跑一樣。這也是它不叫 `workflow.yaml` 或 `pipeline.yaml` 的原因。
+
 定義工作流的 Artifact 依賴圖與 Apply 階段。
 
 ```yaml
