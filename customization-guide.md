@@ -950,7 +950,7 @@ artifacts:
       任務順序：
       1. 前置準備（確認 /scaffold-rules 和 /scaffold-static-analysis 已部署）
       2. DB Migration（Flyway）
-      3. 程式碼骨架生成（/scaffold-jpa 或 /gen-api-task）
+      3. 程式碼骨架生成（/scaffold-jpa 三步驟流程 或 /gen-api-task）
       4. 商業邏輯實作（手動）
       5. 單元測試 + 整合測試（Testcontainers）
       6. 品質檢查（/refactor）
@@ -980,7 +980,7 @@ apply:
 
 | 元件 | Skill | 指令 | 說明 |
 |------|-------|------|------|
-| Entity + MVC 全套 | /scaffold-jpa | `/scaffold-jpa OrderEntity` | 新增 Entity 時使用 |
+| Entity + MVC 全套 | /scaffold-jpa | `/scaffold-jpa-schema <EntityName>` → `/scaffold-jpa-task` → `/scaffold-jpa` | 新增 Entity 時使用 |
 | API Interface + DTO | /gen-api-task | `/gen-api-task` | 有 OpenAPI spec 時使用 |
 ```
 

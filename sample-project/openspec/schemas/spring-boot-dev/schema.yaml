@@ -70,7 +70,7 @@ artifacts:
       任務順序：
       1. 前置準備（確認 /scaffold-rules 和 /scaffold-static-analysis 已部署）
       2. DB Migration（Flyway）
-      3. 程式碼骨架生成（/scaffold-jpa 或 /gen-api-task）
+      3. 程式碼骨架生成（/scaffold-jpa 三步驟流程 或 /gen-api-task）
       4. 商業邏輯實作（手動）
       5. 單元測試 + 整合測試（Testcontainers）
       6. 品質檢查（/refactor）

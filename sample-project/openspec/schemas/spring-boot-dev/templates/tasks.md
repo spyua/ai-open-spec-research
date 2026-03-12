@@ -11,8 +11,10 @@
 
 ## 2. 程式碼骨架生成
 <!-- 根據 design.md「可自動化元件」章節決定使用哪些 skills -->
-- [ ] 2.1 🤖 [自動] 執行 `/scaffold-jpa <entity-name>` 生成 Entity/Repo/Service/Controller/DTO/Mapper
-- [ ] 2.2 🤖 [自動] 執行 `/gen-api-task` 從 OpenAPI spec 生成 API Interface + DTO（若適用）
+- [ ] 2.1 🤖 [自動] 執行 `/scaffold-jpa-schema <EntityName>` 建立 Entity Schema
+- [ ] 2.2 🤖 [自動] 執行 `/scaffold-jpa-task` 建立生成任務
+- [ ] 2.3 🤖 [自動] 執行 `/scaffold-jpa` 生成 Entity/Repo/Service/Controller/DTO/Mapper
+- [ ] 2.4 🤖 [自動] 執行 `/gen-api-task` 從 OpenAPI spec 生成 API Interface + DTO（若適用）
 
 ## 3. 商業邏輯實作
 - [ ] 3.1 ✋ [手動] 實作 Service 商業邏輯

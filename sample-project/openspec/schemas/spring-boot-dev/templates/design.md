@@ -98,7 +98,7 @@ sequenceDiagram
 
 | 元件 | Skill | 指令 | 說明 |
 |------|-------|------|------|
-| Entity + MVC 全套 | /scaffold-jpa | `/scaffold-jpa <entity-name>` | 新增 Entity 時使用 |
+| Entity + MVC 全套 | /scaffold-jpa | `/scaffold-jpa-schema <EntityName>` → `/scaffold-jpa-task` → `/scaffold-jpa` | 新增 Entity 時使用 |
 | API Interface + DTO | /gen-api-task | `/gen-api-task` | 有 OpenAPI spec 時使用 |
 | GCP Secret | /scaffold-gcp-secret | `/scaffold-gcp-secret` | 需要 Secret Manager 時使用 |
 
