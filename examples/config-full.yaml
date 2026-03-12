@@ -1,0 +1,35 @@
+# 完整設定範例 — 展示所有可用選項
+
+# 預設 schema
+schema: spring-boot-workflow
+
+# 專案上下文（注入到所有 artifact）
+context: |
+  Tech stack: Java 17, Spring Boot 3.x, PostgreSQL, Redis
+  Architecture: Layered + DDD for core domains
+  API style: RESTful with OpenAPI 3.0
+  Testing: JUnit 5, Mockito, Testcontainers
+  CI/CD: GitHub Actions → AWS ECS
+  Team size: 5 backend developers
+
+# 針對特定 artifact 的規則（只注入到對應 artifact）
+rules:
+  proposal:
+    - Must include rollback plan
+    - Must identify affected microservices
+    - Must assess backward compatibility
+
+  specs:
+    - Use Given/When/Then format
+    - Must include error scenarios
+    - API specs must include request/response examples
+
+  design:
+    - Must include sequence diagram (Mermaid)
+    - Must describe DB schema changes with migration plan
+    - Must consider concurrency and performance
+
+  tasks:
+    - Each task must be completable in under 4 hours
+    - Must include unit test and integration test tasks
+    - Must include API documentation update task

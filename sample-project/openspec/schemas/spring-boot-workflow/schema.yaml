@@ -1,0 +1,80 @@
+# Custom Schema: Spring Boot Workflow
+# 適合 Spring Boot 後端團隊的開發流程
+name: spring-boot-workflow
+version: 1
+description: Spring Boot backend team workflow with API-first design
+
+artifacts:
+  # 1. Proposal — 為什麼要做、做什麼
+  - id: proposal
+    generates: proposal.md
+    description: 變更提案，說明動機、範圍和影響
+    template: proposal.md
+    instruction: |
+      Create a proposal for this change.
+      Focus on:
+      - WHY this change is needed (business value)
+      - WHAT will change (scope)
+      - Impact on existing APIs and services
+      - Rollback strategy
+      - Affected microservices
+    requires: []
+
+  # 2. Specs — 行為規格（Given/When/Then）
+  - id: specs
+    generates: specs/**/*.md
+    description: Delta specs，定義新增/修改/移除的需求
+    template: spec.md
+    instruction: |
+      Create delta specs for this change.
+      Use Given/When/Then format for all scenarios.
+      Include:
+      - Happy path scenarios
+      - Error/edge case scenarios
+      - API contract (method, path, request/response)
+      Organize by domain (one spec file per domain).
+    requires:
+      - proposal
+
+  # 3. Design — 技術設計
+  - id: design
+    generates: design.md
+    description: 技術設計文件，包含架構決策和實作細節
+    template: design.md
+    instruction: |
+      Create a technical design document.
+      Include:
+      - Architecture approach (which layers are affected)
+      - Database schema changes (if any) with Flyway migration plan
+      - API design with OpenAPI snippets
+      - Sequence diagrams (Mermaid format)
+      - Performance and concurrency considerations
+      - Dependencies on other services
+    requires:
+      - specs
+
+  # 4. Tasks — 實作清單
+  - id: tasks
+    generates: tasks.md
+    description: 實作任務清單，含 checkbox
+    template: tasks.md
+    instruction: |
+      Create an implementation task list.
+      Each task should be completable in under 4 hours.
+      Include tasks for:
+      - Database migration
+      - Domain/entity layer
+      - Repository layer
+      - Service layer
+      - Controller/API layer
+      - Unit tests
+      - Integration tests (Testcontainers)
+      - API documentation update
+      Order tasks by development sequence.
+    requires:
+      - design
+
+# apply 設定 — 進入實作階段的條件
+apply:
+  requires: [tasks]
+  tracks: tasks.md

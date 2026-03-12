@@ -1,0 +1,63 @@
+# OpenSpec Project Configuration
+# 這是最重要的設定檔，控制預設行為和 AI 生成品質
+
+# 預設 schema — 設定後不用每次打 --schema
+schema: spring-boot-workflow
+
+# 專案上下文 — 注入到「所有」artifact 的 AI prompt 中
+# AI 會根據這些資訊生成更貼合專案的內容
+context: |
+  ## Tech Stack
+  - Language: Java 17
+  - Framework: Spring Boot 3.x
+  - Build Tool: Gradle (Kotlin DSL)
+  - Database: PostgreSQL 15 + Flyway migration
+  - Cache: Redis
+  - Message Queue: RabbitMQ
+  - API Style: RESTful, OpenAPI 3.0 documented
+
+  ## Architecture
+  - Layered architecture: Controller → Service → Repository
+  - Domain-Driven Design (DDD) for core business logic
+  - CQRS pattern for read-heavy modules
+
+  ## Conventions
+  - Package naming: com.company.project.{domain}.{layer}
+  - DTO suffix for data transfer objects
+  - All public APIs must have Swagger annotations
+  - Integration tests use Testcontainers
+
+  ## Team
+  - Backend team: 5 developers
+  - Code review required before merge
+  - CI/CD: GitHub Actions → AWS ECS
+
+# 針對特定 artifact 的規則 — 只注入到「對應」artifact 的 prompt
+rules:
+  # proposal artifact 的規則
+  proposal:
+    - 必須包含 rollback plan（回滾計畫）
+    - 必須識別受影響的微服務
+    - 必須評估對現有 API 的向後相容性影響
+    - 如果涉及 DB schema 變更，必須說明 migration 策略
+
+  # specs artifact 的規則
+  specs:
+    - 使用 Given/When/Then (GWT) 格式撰寫 scenario
+    - 必須包含 error scenario（異常情境）
+    - API spec 必須包含 HTTP method、path、request/response 範例
+    - 參考現有 specs 中的模式，避免發明新模式
+
+  # design artifact 的規則
+  design:
+    - 必須包含 sequence diagram 或 flow chart（可用 Mermaid）
+    - 必須說明 DB schema 變更（如有）
+    - 必須考慮 concurrency 和 thread safety
+    - 必須評估 performance impact
+
+  # tasks artifact 的規則
+  tasks:
+    - 每個 task 必須可在 4 小時內完成
+    - 必須包含單元測試和整合測試的 task
+    - 必須包含 API 文件更新的 task（如果有 API 變更）
+    - Task 順序應反映實際開發順序

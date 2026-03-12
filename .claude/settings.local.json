@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git init:*)",
+      "Bash(cd \"C:/Users/Mario.Yu/workspace/open-spec研究\" && rm -f nul)"
+    ]
+  }
+}

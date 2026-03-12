@@ -1,0 +1,26 @@
+# 快速迭代 Schema — 最少 overhead，適合小功能或 hotfix
+name: rapid
+version: 1
+description: Fast iteration with minimal overhead
+
+artifacts:
+  - id: proposal
+    generates: proposal.md
+    description: Quick proposal
+    template: proposal.md
+    instruction: |
+      Create a brief proposal. Focus on what and why.
+      Skip detailed specs — keep it under 1 page.
+    requires: []
+
+  - id: tasks
+    generates: tasks.md
+    description: Implementation checklist
+    template: tasks.md
+    instruction: |
+      Create a concise task list. Each task should be actionable.
+    requires: [proposal]
+
+apply:
+  requires: [tasks]
+  tracks: tasks.md
