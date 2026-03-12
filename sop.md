@@ -402,7 +402,7 @@ AI 會逐項完成 tasks.md 中的 checkbox。
 
 **中途如果需要修改 artifacts：** 隨時可以回去改 proposal、design 等，然後繼續 apply。
 
-#### Step 5: 驗證（如果啟用了 expanded profile）
+#### Step 5: 驗證（如果啟用了 custom profile 並包含 verify workflow）
 
 ```
 /opsx:verify
@@ -438,12 +438,12 @@ git commit -m "feat: add dark mode support"
 
 ## SOP-5: 日常開發 — 新功能（逐步控制）
 
-> 適用：需求複雜、需要逐步審核。需要 Expanded Profile。
+> 適用：需求複雜、需要逐步審核。需要 Custom Profile。
 
 ### 前置條件
 
 ```bash
-# 確認已啟用 expanded workflow
+# 確認已啟用 custom workflow
 openspec config list
 # 如果沒有，執行：
 openspec config profile
@@ -634,7 +634,7 @@ Active changes:
 
 ## SOP-9: 批量歸檔
 
-> 適用：多個 changes 都已完成，一次歸檔。需要 Expanded Profile。
+> 適用：多個 changes 都已完成，一次歸檔。需要 Custom Profile。
 
 ### 步驟
 

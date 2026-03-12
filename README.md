@@ -144,18 +144,18 @@ your-project/
 
 提供 4 個指令：`propose`、`explore`、`apply`、`archive`
 
-### Expanded Profile — 完整控制
+### Custom Profile — 完整控制
 
 ```
 /opsx:new ──► /opsx:ff 或 /opsx:continue ──► /opsx:apply ──► /opsx:verify ──► /opsx:archive
 ```
 
-額外提供：`new`、`continue`、`ff`、`verify`、`sync`、`bulk-archive`、`onboard`
+可自由選擇啟用的 workflows：`new`、`continue`、`ff`、`verify`、`sync`、`bulk-archive`、`onboard`
 
 **切換方式：**
 
 ```bash
-openspec config profile     # 互動式選擇
+openspec config profile     # 互動式選擇（可選任意 workflow 子集）
 openspec config profile core   # 快速切回 core
 openspec update             # 套用到專案
 ```
@@ -222,7 +222,7 @@ AI:  ✓ Synced specs to openspec/specs/ui/spec.md
      ✓ Moved to openspec/changes/archive/2025-01-24-add-dark-mode/
 ```
 
-### Expanded Profile 額外指令
+### Custom Profile 額外指令
 
 #### `/opsx:new [change-name] [--schema <name>]`
 
@@ -703,7 +703,7 @@ Change A: /opsx:apply add-2fa → /opsx:archive
 | Requirement | 需求 | 系統必須具備的特定行為 |
 | Scenario | 情境 | 需求的具體範例，通常用 Given/When/Then |
 | Source of Truth | 真相之源 | `openspec/specs/` 目錄，包含當前已確認的行為 |
-| Profile | 配置檔 | 決定啟用哪些 workflow commands（core / custom） |
+| Profile | 配置檔 | 決定啟用哪些 workflow commands（core / custom profile） |
 | Delivery | 交付方式 | skills only / commands only / both |
 
 ---

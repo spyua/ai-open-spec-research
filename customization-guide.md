@@ -26,7 +26,7 @@ OpenSpec 提供三個層級的客製化，由淺到深：
 |------|----------|------|--------|
 | **Project Config** | `openspec/config.yaml` | 設定預設 schema、注入上下文與規則 | 大部分團隊 |
 | **Custom Schema** | `openspec/schemas/<name>/` | 定義自己的 workflow artifacts | 有獨特流程的團隊 |
-| **Global Overrides** | `~/.local/share/openspec/schemas/` | 跨專案共用 schema | Power users |
+| **Global Overrides** | `~/.local/share/openspec/schemas/`（Linux/macOS）或 `%LOCALAPPDATA%/openspec/`（Windows） | 跨專案共用 schema | Power users |
 
 **大部分情況只需要設定 Project Config 就夠了。** Custom Schema 是當內建的 `spec-driven` 骨架不符合你的流程時才需要。
 
