@@ -81,11 +81,37 @@ artifacts:
     requires:
       - design
 
+  # 5. Task Details — 每個 task 的完整實作明細
+  - id: task-details
+    generates: tasks/**/*.md
+    description: 細粒度實作任務文件，每個任務包含 Background、Solution、Reference Code、Acceptance Criteria
+    template: task-detail.md
+    instruction: |
+      將 tasks.md 中的每個 ✋ [手動] task 展開為獨立的 task detail 文件。
+      🤖 [自動] task 不需要展開（直接執行 slash command 即可）。
+
+      檔名格式：TASK-{MODULE}-{NNN}-{Layer描述}.md
+      例如：TASK-CONSENT-001-Entity層.md
+
+      每個 task detail 須包含：
+      1. Background：功能概述、關聯文件（指向 design.md / specs 的具體章節）、依賴關係（前置/被依賴 task）
+      2. Solution：目標產出物（JSON 列出要建/改的檔案路徑與操作類型）、實作規格（從 design.md 提取欄位定義、DB mapping）
+      3. Reference Code：專案結構參照、模式參照（從現有程式碼提取 annotation 慣例、命名慣例）
+      4. Acceptance Criteria：驗收 checklist（程式碼規範 + 功能驗證 + 編譯驗證）
+      5. Metadata：taskId, module, priority, tags, status
+
+      拆分原則：
+      - 按 Layer 拆分：Entity → Repository → Service → Controller
+      - 每個 task 須在 4 小時內完成
+      - 明確標註 task 間的依賴順序
+    requires:
+      - tasks
+
 apply:
-  requires: [tasks]
+  requires: [task-details]
   tracks: tasks.md
   instruction: |
     按照 tasks.md 的順序逐步執行。
     - 🤖 [自動] 標籤的 task：直接執行對應的 slash command
-    - ✋ [手動] 標籤的 task：依據 design.md 和 specs 實作
-    完成每個 task 後勾選 checkbox。
+    - ✋ [手動] 標籤的 task：參考對應的 tasks/TASK-*.md 明細文件實作
+    完成每個 task 後勾選 tasks.md 中的 checkbox。
