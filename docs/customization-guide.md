@@ -1241,7 +1241,7 @@ openspec instructions proposal --change my-change --json
 
 ## 參考
 
-- [主教學指南](README.md) — OpenSpec 完整教學
-- [sample-project/](sample-project/) — 可直接複製使用的 Spring Boot 範例
-- [examples/](examples/) — 各種 config 和 schema 範例
+- [主教學指南](../README.md) — OpenSpec 完整教學
+- [sample-project/](../sample-project/) — 可直接複製使用的 Spring Boot 範例
+- [examples/](../examples/) — 各種 config 和 schema 範例
 - [官方文件](https://github.com/Fission-AI/OpenSpec)

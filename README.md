@@ -541,7 +541,7 @@ The system MUST expire sessions after 15 minutes of inactivity.
 - 4 個實戰範例 Schemas（rapid、with-review、research-first、spring-boot）
 - 設定檢查與除錯
 
-**詳見：[customization-guide.md](customization-guide.md)**
+**詳見：[customization-guide.md](docs/customization-guide.md)**
 
 ---
 
@@ -714,8 +714,10 @@ Change A: /opsx:apply add-2fa → /opsx:archive
 
 | 文件 | 內容 |
 |------|------|
-| [customization-guide.md](customization-guide.md) | 客製化設定完整指南（Config / Schema / Template） |
-| [sop.md](sop.md) | 操作 SOP（12 個具體流程，含指令和 checklist） |
+| [STRUCTURE.md](STRUCTURE.md) | 專案結構說明與建議閱讀順序 |
+| [customization-guide.md](docs/customization-guide.md) | 客製化設定完整指南（Config / Schema / Template） |
+| [sop.md](docs/sop.md) | 操作 SOP（12 個具體流程，含指令和 checklist） |
+| [architecture.md](docs/architecture.md) | 架構分析：OpenSpec 內部設計與運作原理 |
 | [sample-project/](sample-project/) | Spring Boot 範例專案 |
 | [examples/](examples/) | 各種 config 和 schema 範例 |
 
